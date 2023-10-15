@@ -19,14 +19,17 @@ import com.google.zxing.qrcode.QRCodeWriter;
 public class test {
 
     @GetMapping("/")
+
     public String helloWorld() {
-        return "HW";//返回HW.html
+        return "login";
     }
     @RequestMapping("/ftlIndex")
     public String ftlIndex() {
         System.out.println("fff");
-        return "HW";
+        return "login";
     }
+
+
     @GetMapping("/qrcode")
     public void generateQrcode(HttpServletResponse response) throws IOException, WriterException {
         // 生成 UUID
