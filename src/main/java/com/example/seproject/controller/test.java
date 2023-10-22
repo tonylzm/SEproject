@@ -21,7 +21,7 @@ public class test {
     @GetMapping("/")
 
     public String helloWorld() {
-        return "login";
+        return "Main";
     }
     @RequestMapping("/12")
     public String ftlIndex() {
