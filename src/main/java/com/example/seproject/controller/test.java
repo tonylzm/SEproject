@@ -23,10 +23,10 @@ public class test {
     public String helloWorld() {
         return "login";
     }
-    @RequestMapping("/ftlIndex")
+    @RequestMapping("/12")
     public String ftlIndex() {
         System.out.println("fff");
-        return "login";
+        return "HW";
     }
 
 
