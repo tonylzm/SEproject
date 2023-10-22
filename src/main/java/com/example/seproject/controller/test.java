@@ -26,7 +26,7 @@ public class test {
     @RequestMapping("/12")
     public String ftlIndex() {
         System.out.println("fff");
-        return "HW";
+        return "ww";
     }
 
 
