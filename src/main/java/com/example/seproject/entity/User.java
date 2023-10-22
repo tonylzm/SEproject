@@ -11,6 +11,9 @@ public class User {
     private int id;
     private String name;
     private int age;
+    private String login;
+    private String username;
+    private String password;
 
     public int getGender() {
         return gender;
@@ -44,5 +47,20 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+    //以上都是测试
+    //以下是员工登录注册的实体类
+
+    public String getUsername() {
+    	return username;
+    }
+    public void setUsername(String username) {
+    	this.username = username;
+    }
+    public String getPassword() {
+    	return password;
+    }
+    public void setPassword(String password) {
+    	this.password = password;
     }
 }
