@@ -20,7 +20,11 @@ public class visitinfo {
     private String licensePlate;
     private String affiliatedUnit;
     private String visitAreas;
+    private String applicationStatus;
 
+    public String getApplicationStatus(){
+        return applicationStatus;
+    }
     public String getVisitorName() {
         return visitorName;
     }
@@ -91,5 +95,9 @@ public class visitinfo {
 
     public void setVisitAreas(String visitAreas) {
         this.visitAreas = visitAreas;
+    }
+
+    public void setApplicationStatus(String applicationStatus) {
+        this.applicationStatus = applicationStatus;
     }
 }
