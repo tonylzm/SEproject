@@ -1,22 +1,21 @@
 package com.example.seproject.controller;
 
 import com.example.seproject.jpa.UserDao;
-import com.example.seproject.dao.UserMapper;
+//import com.example.seproject.dao.UserMapper;
 import com.example.seproject.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+@Controller
 @RestController
 public class UserControll{
     @Autowired
     UserDao a;
 
-    @Autowired
-    UserMapper m;
 
     @GetMapping("/getAll")
     public List getAll(){
@@ -42,9 +41,9 @@ public class UserControll{
     }
     @GetMapping("/check")
     public String check(@RequestParam("username")String username,@RequestParam("password")String password){
-        int check=m.checkUser(username,password);
+        User user = a.findByUsernameAndPassword(username,password);
         //如果检验成功，返回成功信息
-        if(check==1){
+        if(user!=null){
             return "登录成功";
         }
         //如果检验失败，返回失败信息

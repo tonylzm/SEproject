@@ -3,9 +3,11 @@ package com.example.seproject.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 //和user表对应的实体类
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     private int id;

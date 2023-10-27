@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue.js Example</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <label>访客姓名123：</label>
+<el-input v-model="input" placeholder="请输入内容"></el-input>
+
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+          return {
+              input:''
+          }
+        }
+    });
+</script>
+</body>
+</html>
