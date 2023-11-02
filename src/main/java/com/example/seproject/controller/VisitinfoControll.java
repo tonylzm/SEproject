@@ -34,13 +34,17 @@ public class VisitinfoControll {
         return "登录失败";
     }
 
-    @PostMapping("/addinfo") // 使用@PostMapping
-    //此方法为向数据库中添加访客信息
-    public visitinfo addInfo(@RequestBody visitinfo visitInfo) {
-        // visitInfo对象包含了前端传入的数据
-        visitinfo savedVisitor = v.save(visitInfo); // 假设VisitInfo类与数据库模型对应
-        return savedVisitor;
+    @PostMapping("/addinfo")
+    public String addInfo(@RequestBody visitinfo visitInfo) {
+        visitinfo visitinfo=v.findByVisitorPhone(visitInfo.getVisitorPhone());
+        if(visitinfo!=null){
+            return "该访客已存在";
+        }else{
+            visitinfo savedVisitor =v.save(visitInfo);
+            return "添加成功";
+        }
     }
+
 
 
     @GetMapping("/allinfo")//前端查看所有访客信息方法，返回一个数组
