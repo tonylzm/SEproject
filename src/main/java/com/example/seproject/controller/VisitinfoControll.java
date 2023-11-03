@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * 文件名：VisitinfoControll.java
+ * 功能描述：访客信息控制类
+ * 作者：tony lzm
+ * 创建时间：2020-09-17 10:00
+ * 修改记录：
+ *******************************************************************************/
+
 package com.example.seproject.controller;
 
 import com.example.seproject.entity.User;
@@ -22,19 +30,8 @@ public class VisitinfoControll {
     VisitinfoDao v;
     @Autowired
     blockDao b;
-    @Autowired
-    UserDao u;
 
-    @GetMapping("/check")//前端登录方法
-    public String check(@RequestParam("username")String username, @RequestParam("password")String password){
-        User user=u.findByUsernameAndPassword(username,password);
-        if(user!=null){
-            return "登录成功";
-        }
-        return "登录失败";
-    }
-
-    @PostMapping("/addinfo")
+    @PostMapping("/addinfo")//前端添加访客信息方法,如果有未访问完的访客信息，不允许添加
     public String addInfo(@RequestBody visitinfo visitInfo) {
         visitinfo visitinfo=v.findByVisitorPhone(visitInfo.getVisitorPhone());
         if(visitinfo!=null){
@@ -45,6 +42,28 @@ public class VisitinfoControll {
         }
     }
 
+    @GetMapping("/status")//前端查看访客审核状态方法，返回一个字符串
+    public String status(@RequestParam("visitorPhone")String visitorPhone){
+            visitinfo visitinfo=v.findByVisitorPhone(visitorPhone);
+            String status=visitinfo.getApplicationStatus();
+            return status;
+    }
+
+//权限判断，明日需重点完善此部分
+    @GetMapping("/power")
+    public String power(@RequestParam("visitorPhone")String visitorPhone){
+        visitinfo visitinfo=v.findByVisitorPhone(visitorPhone);
+        String areas=visitinfo.getVisitAreas();
+        //如果仓库字段在访问区域中，返回仓库权限
+        if(areas.contains("仓库")){
+            return "仓库权限";
+        }
+        //如果办公区字段在访问区域中，返回办公区权限
+        if(areas.contains("办公大楼")){
+            return "办公区权限";
+        }
+        return "无权限";
+    }
 
 
     @GetMapping("/allinfo")//前端查看所有访客信息方法，返回一个数组
@@ -53,17 +72,30 @@ public class VisitinfoControll {
         return all;
     }
 
+
+
+
+
     @GetMapping("/findinfo")//前端查看特定访客信息方法，返回一个对象
     public visitinfo findinfo(@RequestParam("visitorPhone")String visitorPhone){
         visitinfo visitinfo=v.findByVisitorPhone(visitorPhone);
         return  visitinfo;
     }
 
+
+
+
+
     @GetMapping("/blockinfo")//前端查看特定访客信息方法，返回一个对象，为黑名单对象
     public block blockinfo(@RequestParam("visitorPhone")String visitorPhone){
         block block=b.findByVisitorPhone(visitorPhone);
         return  block;
     }
+
+
+
+
+
 
     @PostMapping("/addreason")//前端添加拉黑原因方法
     public block addreason(@RequestBody block request){
@@ -77,6 +109,11 @@ public class VisitinfoControll {
         }
         return blocks;
     }
+
+
+
+
+
 
     @GetMapping("/removeblock")//前端移除黑名单方法
     public block removeblock(@RequestParam("visitorPhone")String visitorPhone){
@@ -92,6 +129,9 @@ public class VisitinfoControll {
         }
         return block;
     }
+
+
+
 
     @GetMapping("/vet")//前端同意审核访客方法
     public visitinfo vet(@RequestParam("visitorPhone")String visitorPhone) {
