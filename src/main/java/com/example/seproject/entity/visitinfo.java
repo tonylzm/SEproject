@@ -11,16 +11,35 @@ import java.sql.Date;
 @Table(name="visitorinfo")
 public class visitinfo {
     @Id
-    private String visitorName;
     private String visitorPhone;
+    private String visitorName;
+
     private String idcard;
     private Date arrivedate;
+    private String arrivetime;
+    private String lefttime;
     private String visitreason;
     private boolean useCar;
     private String licensePlate;
     private String affiliatedUnit;
     private String visitAreas;
     private String applicationStatus;
+
+    public String getArrivetime() {
+        return arrivetime;
+    }
+
+    public void setArrivetime(String arrivetime) {
+        this.arrivetime = arrivetime;
+    }
+
+    public String getLefttime() {
+        return lefttime;
+    }
+
+    public void setLefttime(String lefttime) {
+        this.lefttime = lefttime;
+    }
 
     public String getApplicationStatus(){
         return applicationStatus;
