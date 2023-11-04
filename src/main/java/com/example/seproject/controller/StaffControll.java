@@ -29,4 +29,18 @@ public class StaffControll {
         return savedStaff;
     }
 
+    @PostMapping("/checkpower")
+    public String checkpower(@RequestParam("StaffIdcard")String StaffIdcard){
+        Internal_staff internal_staff=i.findByStaffIdcard(StaffIdcard);
+        String power=internal_staff.getStaffAffiliatedUnit()+internal_staff.getStaffPosition();
+        return power;
+    }
+
+    @GetMapping("/staffinfo")
+    public Internal_staff staffinfo(@RequestParam("StaffIdcard")String StaffIdcard){
+        Internal_staff internal_staff=i.findByStaffIdcard(StaffIdcard);
+        internal_staff.setStaffPassword("*******");
+        return internal_staff;
+    }
+
 }
