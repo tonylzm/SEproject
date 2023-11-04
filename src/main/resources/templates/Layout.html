@@ -36,10 +36,10 @@
 
         <el-container>
             <el-header style="text-align: right; font-size: 10px">
-                <el-tabs v-model="tabledata" type="border-card" >
-                    <el-tab-pane label="待审核记录" name="unreviewed" @click="handleUnreviewedClick"></el-tab-pane>
-                    <el-tab-pane label="已审核记录" name="reviewed" @click="handleReviewedClick"></el-tab-pane>
-                    <el-tab-pane label="黑名单" name="blacklist" @click="handleBlacklistClick"></el-tab-pane>
+                <el-tabs v-model="tabledata" type="border-card" @tab-click="handleTabClick">
+                    <el-tab-pane label="待审核记录" name="unreviewed" ></el-tab-pane>
+                    <el-tab-pane label="已审核记录" name="reviewed"></el-tab-pane>
+                    <el-tab-pane label="黑名单" name="blacklist"></el-tab-pane>
                 </el-tabs>
                 <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
             </el-header>
@@ -221,9 +221,10 @@
             }
         },
         methods: {
-            handleUnreviewedClick() {
-                // 处理待审核记录标签页点击事件
-                console.log('待审核记录标签页被点击了');
+            handleUnreviewedClick: function ()
+            {
+                this.showTable = true;
+                this.showTable1 = true;
             },
             handleReviewedClick() {
                 // 处理已审核记录标签页点击事件
@@ -245,11 +246,14 @@
             handleBlacklist(row) {
                 // 拉黑操作的逻辑
             },
-            handleTabClick(tab) {
+            handleTabClick(tab,event) {
+                console.log(tab, event);
                 if (tab.name === 'unreviewed') {
-                    this.data = this.tableData;
+                    this.showTable = true;
+                    this.showTable1 = true;
                 } else if (tab.name === 'reviewed') {
-                    this.data = this.tableData1;
+                    this.showTable = true;
+                    this.showTable1 = false;
                 } else if (tab.name === 'blacklist') {
                     this.data = this.tableData2;
                 }
