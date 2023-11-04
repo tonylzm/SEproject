@@ -19,6 +19,7 @@
             justify-content: flex-start;
             align-items: center;
             width: 50%;
+            float:left;
 
         }
         #container2 {
@@ -27,18 +28,17 @@
             justify-content: flex-end;
             align-items: center;
             width: 50%;
+            float:right;
         }
         .el-header{
             background-color: #B3C0D1;
             color: #333;
-            /*text-align: center;*/
             line-height: 60px;
-            /*height: 100px;*/
         }
         .el-footer {
             background-color: #B3C0D1;
             color: #333;
-            /*text-align: center;*/
+            text-align: center;
             line-height: 60px;
 
         }
@@ -54,7 +54,7 @@
             background-color: #E9EEF3;
             color: #333;
             text-align: center;
-            line-height: 550px;
+            line-height: 570px;
         }
 
         body > .el-container {
@@ -76,7 +76,18 @@
         }
         .locate{
             margin-right: 20px;
-            /*font-size: 10px;*/
+            height: 30px;
+            width: 30px;
+            font-size: 10px;
+        }
+        .el-icon-bell{
+            margin-left: 20px;
+        }
+        .el-logo2{
+            margin-left:20px;
+        }
+        .text2{
+            margin-left: 20px;
         }
 
         .el-menu-item,
@@ -89,8 +100,17 @@
         }
 
         .el-menu {
-            max-height: 650px; /* 设置菜单的最大高度 */
-            /*overflow-y: auto; !* 超出最大高度时添加滚动条 *!*/
+            max-height: 550px; /* 设置菜单的最大高度 */
+            overflow-y: auto; /* 超出最大高度时添加滚动条 */
+        }
+        .title {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .phone,
+        .team-name {
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -99,17 +119,18 @@
     <el-container>
         <el-header>
             <div id="container1">
-                <!--                <el-avatar class="el-logo" :src="logo"></el-avatar>-->
                 <img src="/logo.png"style="width: 30px; height: 30px;margin-right: 20px;">
                 <element class="text">访客系统</element>
-                <i class="el-icon-location"></i>
+                <el-button class="locate" type="primary"  size="small" icon="el-icon-location" @click="getLocation" circle></el-button>
+                <!--                <i slot="suffix" class="el-icon-location" @click="getLocation"></i>-->
+                <span>{{ currentLocation }}</span>
             </div>
 
             <div id="container2">
-
+                <i class="el-icon-bell"></i>
                 <el-avatar class="el-logo2">头像</el-avatar>
                 <element class="text2">张三</element>
-                <i class="el-icon-bell"></i>
+
             </div>
         </el-header>
         <el-container>
@@ -123,7 +144,7 @@
                             @close="handleClose">
                         <el-submenu index="1">
                             <template slot="title">
-                                <i class="el-icon-location"></i>
+                                <i class="el-icon-menu"></i>
                                 <span>访客管理</span>
                             </template>
                             <el-menu-item-group>
@@ -135,7 +156,7 @@
                         </el-submenu>
                         <el-submenu index="2">
                             <template slot="title">
-                                <i class="el-icon-location"></i>
+                                <i class="el-icon-menu"></i>
                                 <span>内部管理</span>
                             </template>
                             <el-menu-item-group>
@@ -148,7 +169,7 @@
 
                         <el-submenu index="3">
                             <template slot="title">
-                                <i class="el-icon-location"></i>
+                                <i class="el-icon-menu"></i>
                                 <span>设备管理</span>
                             </template>
                             <el-menu-item-group>
@@ -160,7 +181,7 @@
 
                         <el-submenu index="4">
                             <template slot="title">
-                                <i class="el-icon-location"></i>
+                                <i class="el-icon-menu"></i>
                                 <span>系统管理</span>
                             </template>
                             <el-menu-item-group>
@@ -174,47 +195,45 @@
                     </el-menu>
                     <!--                    </el-col>-->
                 </el-row>
+                <img src="/QRcode.png"style="width: 30px; height: 30px;margin-right: 20px;">
             </el-aside>
             <el-container>
                 <el-main>Main</el-main>
-                <el-footer>Footer</el-footer>
+                <el-footer>
+                    <div class="contact-us">
+                        <span class="title">联系我们：</span>
+                        <span class="phone">tonyandthor@qq.com</span>
+                        <span class="title">设计：</span>
+                        <span class="team-name">如如队</span>
+                    </div>
+                    </el-footer>
             </el-container>
         </el-container>
     </el-container>
 </div>
 </body>
 <script>
-    // new Vue({
-    //     el: '#app',
-    //     data: {
-    //         loading: false,
-    //     }
-    // })
     new Vue({
         el: '#app',
         data: {
             loading: false,
-        }
-        // data() {
-        //     return {
-        //         logo: ''
-        //     }
-        // },
-        // mounted() {
-        //     import('../images/logo.png').then(logo => {
-        //         this.logo = logo.default;
-        //     });
-        // }
+            currentLocation:'',
+
+
+        },
+        methods: {
+            getLocation() {
+                this.currentLocation = '某个位置';
+            }
+        },
     })
-    // import logo from '../images/logo.png'
-    // export default {
-    //     data(){
-    //         return {
-    //             // fit: 'contain',
-    //             logo : logo
-    //         }
-    //     }
-    // }
+    // navigator.geolocation.getCurrentPosition((position) => {
+    //     this.currentLocation = `纬度：${position.coords.latitude}，经度：${position.coords.longitude}`;
+    // }, (error) => {
+    //     console.error(error);
+    // });
+    // 在这里编写获取位置的逻辑，可以使用浏览器的 geolocation API 或其他库来实现
+    // 这里假设获取到的位置为 '某个位置'
     // export default {
     //     methods: {
     //         handleOpen(key, keyPath) {
