@@ -13,3 +13,4 @@ public interface VisitinfoDao extends JpaRepository<visitinfo,Integer> {
     @Query("UPDATE visitinfo v SET v.UUID = :uuid WHERE v.visitorPhone = :visitPhone")
     void updateUUIDByVisitPhone( String visitPhone,  String uuid);
 }
+//

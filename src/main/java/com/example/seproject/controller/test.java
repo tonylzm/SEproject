@@ -35,7 +35,7 @@ public class test {
 //        System.out.println("fff");
 //        return "ww";
 //    }
-
+//
 
     @GetMapping("/qrcode")
     @Transactional

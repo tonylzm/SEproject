@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 
 import java.sql.Date;
 
-
+//
 @Entity
 @Table(name="visitorinfo")
 public class visitinfo {
