@@ -45,6 +45,9 @@ public class VisitinfoControll {
     @GetMapping("/status")//前端查看访客审核状态方法，返回一个字符串
     public String status(@RequestParam("visitorPhone")String visitorPhone){
             visitinfo visitinfo=v.findByVisitorPhone(visitorPhone);
+            if(visitinfo==null){
+                return "不存在";
+            }
             String status=visitinfo.getApplicationStatus();
             return status;
     }

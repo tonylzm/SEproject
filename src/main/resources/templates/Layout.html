@@ -95,9 +95,18 @@
                             <el-button type="danger" icon="el-icon-close" @click="handleReject(scope.row)" size="small">拒绝</el-button>
                             <el-button type="danger" icon="el-icon-circle-close" @click="handleBlacklist(scope.row)" size="small">拉黑</el-button>
                         </div>
+
                     </el-table-column>
 
                 </el-table>
+                <el-pagination
+                        @current-change="handlePageChange"
+                        :current-page="currentPage"
+                        :page-sizes="[10, 20, 50, 100]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                :total="totalItems"
+                />
                 <el-table  v-if="showTable" :data="tableData1" :columns="tableColumns">
                     <el-table-column prop="number" label="序号2" width="60">
                     </el-table-column>

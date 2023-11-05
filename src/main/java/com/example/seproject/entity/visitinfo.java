@@ -13,7 +13,8 @@ public class visitinfo {
     @Id
     private String visitorPhone;
     private String visitorName;
-
+//UUID
+    private String UUID;
     private String idcard;
     private Date arrivedate;
     private String arrivetime;
@@ -24,6 +25,14 @@ public class visitinfo {
     private String affiliatedUnit;
     private String visitAreas;
     private String applicationStatus;
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
+    }
 
     public String getArrivetime() {
         return arrivetime;
