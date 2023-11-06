@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+//时效性检测方法
 @Service
 public class agingservice {
     //检测时效性
@@ -23,8 +24,6 @@ public class agingservice {
             return "时间范围不在当前时间内，已过期";
         }
     }
-
-
     public static boolean isTimeRangeOverlapping(String timeRange) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.stereotype.Controller;
@@ -29,18 +30,19 @@ public class test {
     QRCodeService q;
     @Autowired
     InStaffDao s;
-//    @GetMapping("/")
-//
-//    public String helloWorld() {
-//        return "main";
-//    }
-//    @RequestMapping("/12")
-//    public String ftlIndex() {
-//        System.out.println("fff");
-//        return "ww";
-//    }
-//
 
+
+    @GetMapping("/")
+    public String helloWorld() {
+        return "main";
+    }
+    @RequestMapping("/12")
+    public String ftlIndex() {
+        System.out.println("fff");
+        return "ww";
+    }
+
+//以下是生成二维码的方法，访客二维码，具有时效性判断
     @GetMapping("/qrcode")
     @Transactional
     public void generateQrcode(HttpServletResponse response, @RequestParam("visitorPhone")String visitPhone) throws IOException, WriterException {
@@ -64,6 +66,7 @@ public class test {
         }
     }
 
+    //以下是生成二维码的方法，员工二维码，无时效性判断
     @GetMapping("/staffqrcode")
     @Transactional
     public void staffqrcode(HttpServletResponse response, @RequestParam("StaffIdcard")String StaffIdcard) throws IOException, WriterException {
