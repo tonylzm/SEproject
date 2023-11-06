@@ -15,4 +15,7 @@ public interface VisitinfoDao extends JpaRepository<visitinfo,Integer> {
     //查找arrivedata，arrivetime,lefttime
     @Query("SELECT CONCAT(v.arrivedate,' ', v.arrivetime, ' - ',v.arrivedate, ' ', v.lefttime) FROM visitinfo v WHERE v.visitorPhone = :visitPhone")
     String findTimeByvisitorPhone(String visitPhone);
+    //查找applicationStatus
+    @Query("SELECT v.applicationStatus FROM visitinfo v WHERE v.visitorPhone = :visitPhone")
+    String findApplicationStatusByvisitorPhone(String visitPhone);
 }

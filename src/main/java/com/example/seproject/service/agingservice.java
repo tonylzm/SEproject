@@ -19,7 +19,6 @@ public class agingservice {
         String timeRange = v.findTimeByvisitorPhone(visitPhone);
         if (isTimeRangeOverlapping(timeRange)) {
             return "时间范围在当前时间内，具有时效性";
-
         } else {
             return "时间范围不在当前时间内，已过期";
         }
@@ -38,4 +37,14 @@ public class agingservice {
             return false;
         }
     }
+    //判断申请状态是否为通过
+//    @Transactional
+//    public boolean isPass(String visitPhone){
+//        String status = v.findApplicationStatusByvisitorPhone(visitPhone);
+//        if (status.equals("通过")){
+//            return true;
+//        }else {
+//            return false;
+//        }
+//    }
 }

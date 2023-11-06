@@ -25,6 +25,43 @@ public class visitinfo {
     private String affiliatedUnit;
     private String visitAreas;
     private String applicationStatus;
+//物流信息
+    private String logisticsnum;
+    private String goods;
+    private boolean elsepeople;
+    private String elsepeopleinfo;
+
+    public String getLogisticsnum() {
+        return logisticsnum;
+    }
+
+    public void setLogisticsnum(String logisticsnum) {
+        this.logisticsnum = logisticsnum;
+    }
+
+    public String getGoods() {
+        return goods;
+    }
+
+    public void setGoods(String goods) {
+        this.goods = goods;
+    }
+
+    public boolean isElsepeople() {
+        return elsepeople;
+    }
+
+    public void setElsepeople(boolean elsepeople) {
+        this.elsepeople = elsepeople;
+    }
+
+    public String getElsepeopleinfo() {
+        return elsepeopleinfo;
+    }
+
+    public void setElsepeopleinfo(String elsepeopleinfo) {
+        this.elsepeopleinfo = elsepeopleinfo;
+    }
 
     public String getUUID() {
         return UUID;
