@@ -14,6 +14,15 @@ public class Internal_staff {
     private String staffAffiliatedUnit;
     private String staffPosition;
     private String staffPassword;
+    private String UUID;
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
+    }
 
     public String getStaffName() {
         return staffName;

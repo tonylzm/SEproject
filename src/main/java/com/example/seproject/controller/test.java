@@ -1,23 +1,21 @@
 package com.example.seproject.controller;
 
+import com.example.seproject.jpa.InStaffDao;
 import com.example.seproject.jpa.VisitinfoDao;
+import com.example.seproject.service.QRCodeService;
+import com.example.seproject.service.agingservice;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.util.UUID;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
+
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 @Controller
 @RestController
@@ -25,6 +23,12 @@ public class test {
 
     @Autowired
     VisitinfoDao v;
+    @Autowired
+    agingservice a;
+    @Autowired
+    QRCodeService q;
+    @Autowired
+    InStaffDao s;
 //    @GetMapping("/")
 //
 //    public String helloWorld() {
@@ -41,27 +45,36 @@ public class test {
     @Transactional
     public void generateQrcode(HttpServletResponse response, @RequestParam("visitorPhone")String visitPhone) throws IOException, WriterException {
         // 生成 UUID
-        System.out.println("visitPhone:"+visitPhone);
         try {
-
-            UUID uuid = UUID.randomUUID();
-            String uuidStr = uuid.toString();
-            v.updateUUIDByVisitPhone(visitPhone,uuidStr);
-            // 生成二维码
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            int width = 300;
-            int height = 300;
-            BitMatrix bitMatrix = qrCodeWriter.encode(uuidStr, BarcodeFormat.QR_CODE, width, height);
-            // 将二维码写入响应流
-            response.setContentType("image/png");
-            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", response.getOutputStream());
+            switch (a.aging(visitPhone)) {
+                case "时间范围在当前时间内，具有时效性" -> {
+                    UUID uuid = UUID.randomUUID();
+                    String uuidStr = uuid.toString();
+                    v.updateUUIDByVisitPhone(visitPhone, uuidStr);
+                    q.generateQRCode(uuidStr, response);
+                }
+                case "时间范围不在当前时间内，已过期" ->{
+                    String uuidStr = "000000000000000000000000";
+                    v.updateUUIDByVisitPhone(visitPhone, uuidStr);
+                    q.generateQRCode(uuidStr, response);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-
-
-
-
+    @GetMapping("/staffqrcode")
+    @Transactional
+    public void staffqrcode(HttpServletResponse response, @RequestParam("StaffIdcard")String StaffIdcard) throws IOException, WriterException {
+        // 生成 UUID
+        try {
+            UUID uuid = UUID.randomUUID();
+            String uuidStr = uuid.toString();
+            s.updateUUIDByStaffIdcard(StaffIdcard, uuidStr);
+            q.generateQRCode(uuidStr, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
