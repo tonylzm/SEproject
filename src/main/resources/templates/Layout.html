@@ -25,6 +25,9 @@
         center-label {
             text-align: center;
         }
+        label{
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -40,153 +43,137 @@
                     <el-tab-pane label="待审核记录" name="unreviewed" ></el-tab-pane>
                     <el-tab-pane label="已审核记录" name="reviewed"></el-tab-pane>
                     <el-tab-pane label="黑名单" name="blacklist"></el-tab-pane>
-                </el-tabs>
-                <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
-            </el-header>
+                    <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
 
 
 
 
-            <el-main>
+
+
+
+            <el-main v-if="showTable0" style="text-align: left; ">
                 <label>访客姓名：<input v-model="visitor.name" /></label>
                 <label>访客手机：<input v-model="visitor.phone" /></label>
                 <label>访客事由：<input v-model="visitor.reason" /></label><br/>
                 <label>访客部门：<input v-model="visitor.department" /></label>
-                <label>邀约人：<input v-model="visitor.inviter" /></label>
+                <label>邀 约 人 ：<input v-model="visitor.inviter" /></label>
                 <label>访客时间：
                     <input type="datetime-local" v-model="visitor.startTime" />
                     至
                     <input type="datetime-local" v-model="visitor.endTime" />
                 </label><br/>
-
-
-                <el-table  v-if="showTable1" :data="tableData" :columns="tableColumns">
-                    <el-table-column prop="number" label="序号1" width="60">
-                    </el-table-column>
-                    <el-table-column prop="visitplace" label="到访区域" width="100">
-                    </el-table-column>
-                    <el-table-column prop="visitreason" label="访问事由" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="transport" label="通行方式" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="name" label="访客姓名" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="phonenumber" label="电话" width="160">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="applicationtime" label="申请时间" width="160">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="duration" label="访问时长" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="control" label="管控" width="80">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="blacklist" label="黑名单" width="80">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" >
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" icon="el-icon-check" @click="handleApprove(scope.row)" size="small">批准</el-button>
-                            <el-button type="danger" icon="el-icon-close" @click="handleReject(scope.row)" size="small">拒绝</el-button>
-                            <el-button type="danger" icon="el-icon-circle-close" @click="handleBlacklist(scope.row)" size="small">拉黑</el-button>
-                        </div>
-
-                    </el-table-column>
-
-                </el-table>
-                <el-pagination
-                        @current-change="handlePageChange"
-                        :current-page="currentPage"
-                        :page-sizes="[10, 20, 50, 100]"
-                        :page-size="pageSize"
-                        layout="total, sizes, prev, pager, next, jumper"
-                :total="totalItems"
-                />
-                <el-table  v-if="showTable" :data="tableData1" :columns="tableColumns">
-                    <el-table-column prop="number" label="序号2" width="60">
-                    </el-table-column>
-                    <el-table-column prop="visitplace" label="到访区域" width="100">
-                    </el-table-column>
-                    <el-table-column prop="visitreason" label="访问事由" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="transport" label="通行方式" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="name" label="访客姓名" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="phonenumber" label="电话" width="160">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="applicationtime" label="申请时间" width="160">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="duration" label="访问时长" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="control" label="管控" width="80">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="blacklist" label="黑名单" width="80">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" >
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" icon="el-icon-check" @click="handleApprove(scope.row)" size="small">批准</el-button>
-                            <el-button type="danger" icon="el-icon-close" @click="handleReject(scope.row)" size="small">拒绝</el-button>
-                            <el-button type="danger" icon="el-icon-circle-close" @click="handleBlacklist(scope.row)" size="small">拉黑</el-button>
-                        </div>
-                    </el-table-column>
-
-                </el-table>
-                </el-table>
-                <el-table :data="tableData2" :columns="tableColumns">
-                    <el-table-column prop="number" label="序号3" width="60">
-                    </el-table-column>
-                    <el-table-column prop="visitplace" label="到访区域" width="100">
-                    </el-table-column>
-                    <el-table-column prop="visitreason" label="访问事由" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="transport" label="通行方式" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="name" label="访客姓名" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="phonenumber" label="电话" width="160">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="applicationtime" label="申请时间" width="160">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="duration" label="访问时长" width="100">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="control" label="管控" width="80">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="blacklist" label="黑名单" width="80">
-                    </el-table-column>
-                    </el-table-column>
-                    <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" >
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" icon="el-icon-check" @click="handleApprove(scope.row)" size="small">批准</el-button>
-                            <el-button type="danger" icon="el-icon-close" @click="handleReject(scope.row)" size="small">拒绝</el-button>
-                            <el-button type="danger" icon="el-icon-circle-close" @click="handleBlacklist(scope.row)" size="small">拉黑</el-button>
-                        </div>
-                    </el-table-column>
-
-                </el-table>
-
-
+                <button>搜索</button>
             </el-main>
+                    <el-main v-if="showTable3" style="text-align: left; ">
+                        <label>姓名：<input v-model="visitor.name" /></label>
+                        <label>操作员 ：<input v-model="visitor.operator" /></label>
+                        <button>搜索</button>
+                    </el-main>
+
+
+                <el-table  v-if="showTable" :data="tableData" :columns="tableColumns">
+                    <el-table-column prop="number" label="序号" width="60">
+                    </el-table-column>
+                    <el-table-column prop="visitplace" label="到访区域" width="100">
+                    </el-table-column>
+                    <el-table-column prop="visitreason" label="访问事由" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="transport" label="通行方式" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="name" label="访客姓名" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="phonenumber" label="电话" width="160">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="applicationtime" label="申请时间" width="160">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="duration" label="访问时长" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="control" label="管控" width="80">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="blacklist" label="黑名单" width="80">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="300" >
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <el-button type="primary" icon="el-icon-check" @click="handleApprove(scope.row)" size="small">批准</el-button>
+                            <el-button type="danger" icon="el-icon-close" @click="handleReject(scope.row)" size="small">拒绝</el-button>
+                            <el-button type="danger" icon="el-icon-circle-close" @click="handleBlacklist(scope.row)" size="small">拉黑</el-button>
+                        </div>
+                    </el-table-column>
+
+                </el-table>
+                <el-table  v-if="showTable1" :data="tableData1" :columns="tableColumns">
+                    <el-table-column prop="number" label="序号" width="60">
+                    </el-table-column>
+                    <el-table-column prop="visitplace" label="到访区域" width="100">
+                    </el-table-column>
+                    <el-table-column prop="visitreason" label="访问事由" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="transport" label="通行方式" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="name" label="访客姓名" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="phonenumber" label="电话" width="160">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="applicationtime" label="申请时间" width="160">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="duration" label="访问时长" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="control" label="管控" width="80">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="state" label="状态" width="80">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" >
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <el-button type="primary" icon="el-icon-check" @click="handleCheck(scope.row)" size="small">查看</el-button>
+
+                        </div>
+                    </el-table-column>
+
+                </el-table>
+                </el-table>
+                <el-table v-if="showTable2":data="tableData2" :columns="tableColumns">
+                    <el-table-column prop="number" label="序号" width="60">
+                    </el-table-column>
+                    <el-table-column prop="name" label="访客姓名" width="100">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="blackreason" label="拉黑原因" width="180">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="blacktime" label="拉黑时间" width="160">
+                    </el-table-column>
+                    </el-table-column>
+                    <el-table-column prop="operator" label="操作员" width="100">
+                    </el-table-column>
+                    <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" >
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <el-button type="primary" icon="el-icon-check" @click="handleMove(scope.row)" size="small">移除</el-button>
+                            <el-button type="danger" icon="el-icon-close" @click="handleCheck(scope.row)" size="small">查看</el-button>
+                        </div>
+                    </el-table-column>
+
+                </el-table>
+
+
+
+                </el-tabs>
+            </el-header>
         </el-container>
     </el-container>
 
@@ -203,8 +190,11 @@
         el: '#app',
         data() {
             return {
+                showTable0:true ,
                 showTable:true ,
                 showTable1:false ,
+                showTable2:false,
+                showTable3:false,
                 tableData: [
                     { number: '1', visitplace: '志明屋1', visitreason: '志明需要打扫' },
                     { number: '2', visitplace: '天赐屋', visitreason: '天赐需要大坝'},
@@ -258,13 +248,24 @@
             handleTabClick(tab,event) {
                 console.log(tab, event);//xx
                 if (tab.name === 'unreviewed') {
-                    this.showTable = true;
-                    this.showTable1 = true;
-                } else if (tab.name === 'reviewed') {
+                    this.showTable0 = true;
                     this.showTable = true;
                     this.showTable1 = false;
+                    this.showTable2 = false;
+                    this.showTable3 = false;
+
+                } else if (tab.name === 'reviewed') {
+                    this.showTable0 = true;
+                    this.showTable = false;
+                    this.showTable1 = true;
+                    this.showTable2 = false;
+                    this.showTable3 = false;
                 } else if (tab.name === 'blacklist') {
-                    this.data = this.tableData2;
+                    this.showTable0 = false;
+                    this.showTable = false;
+                    this.showTable1 = false;
+                    this.showTable2 = true;
+                    this.showTable3 = true;
                 }
             }
         }
