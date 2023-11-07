@@ -14,6 +14,7 @@ import com.example.seproject.entity.visitinfo;
 import com.example.seproject.jpa.UserDao;
 import com.example.seproject.jpa.VisitinfoDao;
 import com.example.seproject.jpa.blockDao;
+import com.example.seproject.service.Info;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -30,12 +31,17 @@ public class VisitinfoControll {
     VisitinfoDao v;
     @Autowired
     blockDao b;
+    @Autowired
+    Info info;
 
     @PostMapping("/addinfo")//前端添加访客信息方法,如果有未访问完的访客信息，不允许添加
     public String addInfo(@RequestBody visitinfo visitInfo) {
+        String status=v.findApplicationStatusByvisitorPhone(visitInfo.getVisitorPhone());
         visitinfo visitinfo=v.findByVisitorPhone(visitInfo.getVisitorPhone());
-        if(visitinfo!=null){
+        if(visitinfo!=null && status.equals("通过")){
             return "该访客已存在";
+        }else if(status.equals("拉黑")){
+            return "该访客已被拉黑";
         }else{
             visitinfo savedVisitor =v.save(visitInfo);
             return "添加成功";
@@ -124,7 +130,7 @@ public class VisitinfoControll {
         visitinfo visitor = v.findByVisitorPhone(visitorPhone);
         if(block!=null && visitor!=null){
             b.delete(block);
-            visitor.setApplicationStatus(" ");
+            visitor.setApplicationStatus(null);
             v.save(visitor);
         }
         else{
@@ -144,6 +150,7 @@ public class VisitinfoControll {
             // 修改 applicationStatus 的值为 "通过"
             visitor.setApplicationStatus("通过");
             v.save(visitor);
+            info.infooperate(visitor);
         } else {
             return null;
             // 处理访客未找到的情况，例如抛出异常或其他操作
@@ -179,6 +186,7 @@ public class VisitinfoControll {
             visitor.setApplicationStatus("拉黑");
             v.save(visitor);
             b.save(blockInfo);
+            info.infooperate(visitor);
         } else {
             return null;
             // 处理访客未找到的情况，例如抛出异常或其他操作
@@ -196,6 +204,7 @@ public class VisitinfoControll {
             // 修改 applicationStatus 的值为 "拒绝"
             visitor.setApplicationStatus("拒绝");
             v.save(visitor);
+            info.infooperate(visitor);
         } else {
             return null;
             // 处理访客未找到的情况，例如抛出异常或其他操作

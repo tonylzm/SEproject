@@ -1,48 +1,74 @@
 package com.example.seproject.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.sql.Date;
 
+//
 @Entity
 @Table(name="history")
 public class History {
     @Id
+    //UUID
+    private String UUID;
+    private Date arrivedate;
     private String visitorPhone;
     private String visitorName;
-    private Date arrivedate;
+    private String idcard;
     private String arrivetime;
     private String lefttime;
     private String visitreason;
     private boolean useCar;
     private String licensePlate;
+    private String affiliatedUnit;
     private String visitAreas;
+    private String applicationStatus;
+    //物流信息
+    private String logisticsnum;
+    private String goods;
+    private boolean elsepeople;
+    private String elsepeopleinfo;
 
-    public String getVisitorPhone() {
-        return visitorPhone;
+    public String getLogisticsnum() {
+        return logisticsnum;
     }
 
-    public void setVisitorPhone(String visitorPhone) {
-        this.visitorPhone = visitorPhone;
+    public void setLogisticsnum(String logisticsnum) {
+        this.logisticsnum = logisticsnum;
     }
 
-    public String getVisitorName() {
-        return visitorName;
+    public String getGoods() {
+        return goods;
     }
 
-    public void setVisitorName(String visitorName) {
-        this.visitorName = visitorName;
+    public void setGoods(String goods) {
+        this.goods = goods;
     }
 
-    public Date getArrivedate() {
-        return arrivedate;
+    public boolean isElsepeople() {
+        return elsepeople;
     }
 
-    public void setArrivedate(Date arrivedate) {
-        this.arrivedate = arrivedate;
+    public void setElsepeople(boolean elsepeople) {
+        this.elsepeople = elsepeople;
+    }
+
+    public String getElsepeopleinfo() {
+        return elsepeopleinfo;
+    }
+
+    public void setElsepeopleinfo(String elsepeopleinfo) {
+        this.elsepeopleinfo = elsepeopleinfo;
+    }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
     }
 
     public String getArrivetime() {
@@ -59,6 +85,41 @@ public class History {
 
     public void setLefttime(String lefttime) {
         this.lefttime = lefttime;
+    }
+
+    public String getApplicationStatus(){
+        return applicationStatus;
+    }
+    public String getVisitorName() {
+        return visitorName;
+    }
+
+    public void setVisitorName(String visitorName) {
+        this.visitorName = visitorName;
+    }
+
+    public String getVisitorPhone() {
+        return visitorPhone;
+    }
+
+    public void setVisitorPhone(String visitorPhone) {
+        this.visitorPhone = visitorPhone;
+    }
+
+    public String getIdcard() {
+        return idcard;
+    }
+
+    public void setIdcard(String idcard) {
+        this.idcard = idcard;
+    }
+
+    public Date getArrivedate() {
+        return arrivedate;
+    }
+
+    public void setArrivedate(Date arrivedate) {
+        this.arrivedate = arrivedate;
     }
 
     public String getVisitreason() {
@@ -85,11 +146,23 @@ public class History {
         this.licensePlate = licensePlate;
     }
 
+    public String getAffiliatedUnit() {
+        return affiliatedUnit;
+    }
+
+    public void setAffiliatedUnit(String affiliatedUnit) {
+        this.affiliatedUnit = affiliatedUnit;
+    }
+
     public String getVisitAreas() {
         return visitAreas;
     }
 
     public void setVisitAreas(String visitAreas) {
         this.visitAreas = visitAreas;
+    }
+
+    public void setApplicationStatus(String applicationStatus) {
+        this.applicationStatus = applicationStatus;
     }
 }
