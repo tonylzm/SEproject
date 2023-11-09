@@ -39,5 +39,5 @@ public class EndControll {
     public History getInfo(@RequestParam("visitorPhone")String visitorPhone){
         return h.findByVisitorPhone(visitorPhone);
     }
-//审批
+//设备
 }

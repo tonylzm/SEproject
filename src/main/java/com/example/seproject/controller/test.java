@@ -32,15 +32,7 @@ public class test {
     InStaffDao s;
 
 
-    @GetMapping("/")
-    public String helloWorld() {
-        return "main";
-    }
-    @RequestMapping("/12")
-    public String ftlIndex() {
-        System.out.println("fff");
-        return "ww";
-    }
+
 
 //以下是生成二维码的方法，访客二维码，具有时效性判断
     @GetMapping("/qrcode")

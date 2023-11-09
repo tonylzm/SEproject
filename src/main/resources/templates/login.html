@@ -126,19 +126,19 @@
                 // 发送登录请求到服务器
                 axios.post('<c:url value="/api/login"/>', requestData)
                     .then(response => {
-                        // 处理登录成功
-                        console.log(response.data); // 登录成功的响应数据
+                    // 处理登录成功
+                    console.log(response.data); // 登录成功的响应数据
 
-                        // 获取登录成功后的用户名
-                        const username = response.data;
+                    // 获取登录成功后的用户名
+                    const username = response.data;
 
-                        // 将用户名存储到本地存储或Cookie中，以便在跳转后的页面获取
-                        // 这里以使用localStorage为例
-                        localStorage.setItem('username', username);
-                        this.$message.success('登录成功');
-                        // 跳转到主页面
-                        window.location.href = "index.jsp";
-                    })
+                    // 将用户名存储到本地存储或Cookie中，以便在跳转后的页面获取
+                    // 这里以使用localStorage为例
+                    localStorage.setItem('username', username);
+                    this.$message.success('登录成功');
+                    // 跳转到主页面
+                    window.location.href = "index.jsp";
+                })
                     .catch(error => {
                         // 处理登录失败
                         console.log(error.response.data); // 登录失败的错误信息

@@ -36,14 +36,22 @@ public class VisitinfoControll {
 
     @PostMapping("/addinfo")//前端添加访客信息方法,如果有未访问完的访客信息，不允许添加
     public String addInfo(@RequestBody visitinfo visitInfo) {
-        String status=v.findApplicationStatusByvisitorPhone(visitInfo.getVisitorPhone());
         visitinfo visitinfo=v.findByVisitorPhone(visitInfo.getVisitorPhone());
-        if(visitinfo!=null && status.equals("通过")){
-            return "该访客已存在";
-        }else if(status.equals("拉黑")){
-            return "该访客已被拉黑";
+        if(visitinfo!=null){
+            String status=visitinfo.getApplicationStatus();
+            if(status==null){
+                return "该访客存在";
+            }
+            else if(status.equals("拉黑")){
+                return "该访客已拉黑";
+            }
+            else if(status.equals("拒绝")){
+                v.save(visitInfo);
+                return "添加成功";
+            }
+            return "该访客存在";
         }else{
-            visitinfo savedVisitor =v.save(visitInfo);
+            v.save(visitInfo);
             return "添加成功";
         }
     }

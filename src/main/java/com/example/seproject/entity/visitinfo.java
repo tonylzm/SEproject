@@ -28,8 +28,18 @@ public class visitinfo {
 //物流信息
     private String logisticsnum;
     private String goods;
+    //施工人员信息
+    private String equipment;
     private boolean elsepeople;
     private String elsepeopleinfo;
+
+    public String getEquipment() {
+        return equipment;
+    }
+
+    public void setEquipment(String equipment) {
+        this.equipment = equipment;
+    }
 
     public String getLogisticsnum() {
         return logisticsnum;
