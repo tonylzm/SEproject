@@ -54,12 +54,12 @@
         }
     </style>
 </head>
-<body background="/background.png">
+<body background="/img/background.jpg">
 <div id="app"  >
     <div class="login-page">
         <el-card class="box-card">
             <div slot="header" class="clearfix">
-                <img src="/logo.png" style="width: 40px; height: 40px; margin: 0 auto; display: block;">
+                <img src="/img/logo.png" style="width: 40px; height: 40px; margin: 0 auto; display: block;">
                 <h1 class="h1" style="text-align: center; color: black;">闭环访客系统</h1>
             </div>
             <div class="login-form">
@@ -114,36 +114,36 @@
                 return password;
             },
             handleLogin() {
-                // 解密密码
-                const decryptedPassword = this.decryptPassword(this.form.password);
 
-                // 创建请求数据对象，包含username和解密后的密码
                 const requestData = {
-                    username: this.form.username,
-                    password: decryptedPassword
+                    StaffIdcard: this.form.username,
+                    StaffPassword: this.form.password,
                 };
 
-                // 发送登录请求到服务器
-                axios.post('<c:url value="/api/login"/>', requestData)
-                    .then(response => {
-                    // 处理登录成功
-                    console.log(response.data); // 登录成功的响应数据
+                //向后端发起get请求
 
-                    // 获取登录成功后的用户名
-                    const username = response.data;
-
-                    // 将用户名存储到本地存储或Cookie中，以便在跳转后的页面获取
-                    // 这里以使用localStorage为例
-                    localStorage.setItem('username', username);
-                    this.$message.success('登录成功');
-                    // 跳转到主页面
-                    window.location.href = "index.jsp";
-                })
-                    .catch(error => {
-                        // 处理登录失败
-                        console.log(error.response.data); // 登录失败的错误信息
-                        this.$message.error('登录失败');
+                axios.get('/loginstaff', {
+                    params: requestData
+                }).then((response) => {
+                    const responseData = response.data;
+                    if (responseData.code === 200) {
+                        this.$message({
+                            message: '登录成功',
+                            type: 'success'
+                        });
+                        window.location.href = "index.jsp";
+                    } else {
+                        this.$message({
+                            message: responseData.message,
+                            type: 'error'
+                        });
+                    }
+                }).catch((error) => {
+                    this.$message({
+                        message: '登录失败',
+                        type: 'error'
                     });
+                });
             }
         }
     });
