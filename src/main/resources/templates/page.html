@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Thymeleaf Page</title>
+</head>
+<body>
+
+<h1>Welcome to Thymeleaf Page</h1>
+
+<div th:if="${user != null}">
+    <p th:text="'Hello, ' + ${user.name} + '!'" />
+</div>
+<div th:unless="${user != null}">
+    <p>Please log in</p>
+</div>
+
+<ul>
+    <li th:each="item : ${items}" th:text="${item}" />
+</ul>
+
+</body>
+</html>

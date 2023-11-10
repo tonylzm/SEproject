@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Vue.js Example</title>
@@ -54,12 +54,12 @@
         }
     </style>
 </head>
-<body background="/img/background.jpg">
+<body background="/static/img/background.jpg">
 <div id="app"  >
     <div class="login-page">
         <el-card class="box-card">
             <div slot="header" class="clearfix">
-                <img src="/img/logo.png" style="width: 40px; height: 40px; margin: 0 auto; display: block;">
+                <img src="/static/img/logo.png" style="width: 40px; height: 40px; margin: 0 auto; display: block;">
                 <h1 class="h1" style="text-align: center; color: black;">闭环访客系统</h1>
             </div>
             <div class="login-form">
