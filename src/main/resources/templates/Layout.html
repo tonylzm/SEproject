@@ -8,11 +8,12 @@
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         el-header {
             background-color: #B3C0D1;
             color: #333;
-            line-height: 60px;
+            line-height: 600px;
         }
 
         el-aside {
@@ -35,23 +36,17 @@
 
 <div id="app">
 
-    <el-container style="height: 500px; border: 1px solid #eee">
 
-        <el-container>
-            <el-header style="text-align: right; font-size: 10px">
+            <el-header style="text-align: right; font-size: 10px;">
                 <el-tabs v-model="tabledata" type="border-card" @tab-click="handleTabClick">
                     <el-tab-pane label="待审核记录" name="unreviewed" ></el-tab-pane>
                     <el-tab-pane label="已审核记录" name="reviewed"></el-tab-pane>
                     <el-tab-pane label="黑名单" name="blacklist"></el-tab-pane>
+
                     <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
 
 
-
-
-
-
-
-            <el-main v-if="showTable0" style="text-align: left; ">
+                    <el-main v-if="showTable0" style="text-align: left;">
                 <label>访客姓名：<input v-model="visitor.name" /></label>
                 <label>访客手机：<input v-model="visitor.phone" /></label>
                 <label>访客事由：<input v-model="visitor.reason" /></label><br/>
@@ -74,7 +69,7 @@
                 <el-table  v-if="showTable" :data="tableData" :columns="tableColumns">
                     <el-table-column prop="number" label="序号" width="60">
                     </el-table-column>
-                    <el-table-column prop="visitplace" label="到访区域" width="100">
+                    <el-table-column prop="visitAreas" label="到访区域" width="100">
                     </el-table-column>
                     <el-table-column prop="visitreason" label="访问事由" width="100">
                     </el-table-column>
@@ -82,13 +77,13 @@
                     <el-table-column prop="transport" label="通行方式" width="100">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="name" label="访客姓名" width="100">
+                    <el-table-column prop="visitorName" label="访客姓名" width="100">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="phonenumber" label="电话" width="160">
+                    <el-table-column prop="visitorPhone" label="电话" width="160">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="applicationtime" label="申请时间" width="160">
+                    <el-table-column prop="arrivetime" label="申请时间" width="160">
                     </el-table-column>
                     </el-table-column>
                     <el-table-column prop="duration" label="访问时长" width="100">
@@ -101,18 +96,22 @@
                     </el-table-column>
                     </el-table-column>
                     <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="300" >
+                        <template slot-scope="scope">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" icon="el-icon-check" @click="handleApprove(scope.row)" size="small">批准</el-button>
-                            <el-button type="danger" icon="el-icon-close" @click="handleReject(scope.row)" size="small">拒绝</el-button>
+
+                            <el-button type="primary" icon="el-icon-check"  @click="handleApprove(scope.row.visitorPhone)" size="small">批准</el-button>
+                            <el-button type="danger" icon="el-icon-close" @click="handleReject(scope.row.visitorPhone)" size="small">拒绝</el-button>
                             <el-button type="danger" icon="el-icon-circle-close" @click="handleBlacklist(scope.row)" size="small">拉黑</el-button>
+
                         </div>
+                        </template>
                     </el-table-column>
 
                 </el-table>
                 <el-table  v-if="showTable1" :data="tableData1" :columns="tableColumns">
                     <el-table-column prop="number" label="序号" width="60">
                     </el-table-column>
-                    <el-table-column prop="visitplace" label="到访区域" width="100">
+                    <el-table-column prop="visitAreas" label="到访区域" width="100">
                     </el-table-column>
                     <el-table-column prop="visitreason" label="访问事由" width="100">
                     </el-table-column>
@@ -120,13 +119,13 @@
                     <el-table-column prop="transport" label="通行方式" width="100">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="name" label="访客姓名" width="100">
+                    <el-table-column prop="visitorName" label="访客姓名" width="100">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="phonenumber" label="电话" width="160">
+                    <el-table-column prop="visitorPhone" label="电话" width="160">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="applicationtime" label="申请时间" width="160">
+                    <el-table-column prop="arrivertime" label="申请时间" width="160">
                     </el-table-column>
                     </el-table-column>
                     <el-table-column prop="duration" label="访问时长" width="100">
@@ -135,7 +134,7 @@
                     <el-table-column prop="control" label="管控" width="80">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="state" label="状态" width="80">
+                    <el-table-column prop="applicationStatus" label="状态" width="80">
                     </el-table-column>
                     </el-table-column>
                     <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" >
@@ -169,18 +168,21 @@
                     </el-table-column>
 
                 </el-table>
-
-
-
                 </el-tabs>
             </el-header>
-        </el-container>
-    </el-container>
+
+
+
+
+
+
 
 
 
 
 </div>
+
+
 
 
 
@@ -195,18 +197,16 @@
                 showTable1:false ,
                 showTable2:false,
                 showTable3:false,
-                tableData: [
-                    { number: '1', visitplace: '志明屋1', visitreason: '志明需要打扫' },
-                    { number: '2', visitplace: '天赐屋', visitreason: '天赐需要大坝'},
-                ],
-                tableData1:[
-                    { number: '1', visitplace: '志明屋2', visitreason: '志明需要打扫' },
-                    { number: '2', visitplace: '天赐屋', visitreason: '天赐需要大坝'},
-                ],
-                tableData2:[
-                    { number: '1', visitplace: '志明屋3', visitreason: '志明需要打扫' },
-                    { number: '2', visitplace: '天赐屋', visitreason: '天赐需要大坝'},
-                ],
+            /*   tableData: [
+                   { number: '',
+                       visitplace: '',
+                       visitreason: '' },
+
+                ],*/
+                tableData:[],
+                tableData1:[],
+                tableData2:[],
+
                 visitor: {
                     name: '',
                     phone: '',
@@ -233,17 +233,69 @@
                 // 处理黑名单标签页点击事件
                 console.log('黑名单标签页被点击了');
             },
-            handleApprove(row) {
-                // 批准操作的逻辑
+            handleApprove(visitorPhone) {
+                // console.log('批准点击，访客电话:', visitorPhone);
+
+                // 在这里可以使用点击行的数据，例如将其发送到API，更新Vuex存储等
+
+                axios.get('/vet', {
+
+                    params: {
+                        visitorPhone:visitorPhone
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
             },
-            handleReject(row) {
+            handleReject(visitorPhone) {
                 // 拒绝操作的逻辑
+                axios.get('/refuse', {
+
+                    params: {
+                        visitorPhone:visitorPhone
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
             },
             handleDelay(row) {
                 // 延期操作的逻辑
             },
             handleBlacklist(row) {
+                function getCurrentFormattedTime() {
+                    const currentDate = new Date();
+                    const year = currentDate.getFullYear();
+                    const month = currentDate.getMonth() + 1;
+                    const day = currentDate.getDate();
+                    const hours = currentDate.getHours();
+                    const minutes = currentDate.getMinutes();
+                    const seconds = currentDate.getSeconds();
+
+                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                }
+                const blocktime = getCurrentFormattedTime();
+
                 // 拉黑操作的逻辑
+                axios.post('/block', {
+                    visitorPhone: row.visitorPhone,
+                    visitorName: row.visitorName,
+                    affiliatedUnit: row.affiliatedUnit,
+                    blocktime: blocktime,
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
             },
             handleTabClick(tab,event) {
                 console.log(tab, event);//xx
@@ -253,6 +305,44 @@
                     this.showTable1 = false;
                     this.showTable2 = false;
                     this.showTable3 = false;
+                    axios.get('/allinfo')
+                        .then(response => {
+                            // 在这里处理后端传来的数据
+
+                            var tableData = response.data;
+                            // const applicationStatusArray = tableData.map(item => item.applicationStatus);
+                            // console.log(applicationStatusArray);
+                            const filteredTableData = tableData.filter(item => item.applicationStatus == null);
+                            const filteredTableData1 = tableData.filter(item => item.applicationStatus !== null);
+                            // 调用渲染函数，传入后端返回的数据
+                          /*  renderTable(tableData);*/
+                            this.tableData = filteredTableData;
+                            this.tableData1 =filteredTableData1;
+                            // this.tableData2 = tableData;
+
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    axios.get('/blockinfo')
+                        .then(response => {
+                            // 在这里处理后端传来的数据
+
+                            var tableData = response.data;
+                            // const applicationStatusArray = tableData.map(item => item.applicationStatus);
+                            // console.log(applicationStatusArray);
+                            const filteredTableData = tableData.filter(item => item.applicationStatus == null);
+                            const filteredTableData1 = tableData.filter(item => item.applicationStatus !== null);
+                            // 调用渲染函数，传入后端返回的数据
+                            /*  renderTable(tableData);*/
+                            this.tableData = filteredTableData;
+                            this.tableData1 =filteredTableData1;
+                            // this.tableData2 = tableData;
+
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
 
                 } else if (tab.name === 'reviewed') {
                     this.showTable0 = true;
@@ -260,12 +350,14 @@
                     this.showTable1 = true;
                     this.showTable2 = false;
                     this.showTable3 = false;
+
                 } else if (tab.name === 'blacklist') {
                     this.showTable0 = false;
                     this.showTable = false;
                     this.showTable1 = false;
                     this.showTable2 = true;
                     this.showTable3 = true;
+
                 }
             }
         }
