@@ -195,10 +195,15 @@
                     <!--                    </el-col>-->
                 </el-row>
 <!--                <img src="/static/img/logo.png"style="width: 30px; height: 30px;">-->
+
             </el-aside>
             <el-container>
                 <el-main>
-                    <iframe style="width: 100%;height: 100%" frameborder="0"></iframe>
+<!--                    <iframe style="width: 100%;height: 100%" frameborder="0"-->
+<!--                    ></iframe>-->
+                    <iframe :src="flowSrc" style="height:100%; width:100%;margin:0;border:0;" v-if="loading" ref="iframeId" id="myFrameId" name="myFrameName">
+
+                    </iframe>
                 </el-main>
                 <el-footer>
                     <div class="contact-us">
@@ -221,9 +226,11 @@
         el:'#app',
 
         data: {
-            loading: false,
+            // loading: false,
             currentLocation:'',
-
+            loading: true,
+            flowSrc: '',
+            showReture: false
 
         },
         methods: {
@@ -240,8 +247,20 @@
             },
             changeIframeSrc3: function() {
                 var iframe = document.querySelector("iframe");
-                iframe.src = "/static/ww.html";
-            }
+                iframe.src = "/static/Layout.html";
+            },
+            //解决iframe框架不能及时刷新的问题
+            handleIframe(e) {
+                console.log('切换', e)
+                this.warehouse.cloudId = e
+                this.loading = false
+                this.flowSrc = 'http://10.0.11.9:2080/#/grain-room/condition/current?user=grainszy&pass=bupt%40Htl301&grainRoomId=' + this.warehouse.cloudId;  //直接给flowSrc赋值链接
+                setTimeout(()=>{
+                    this.loading = true
+                },1000)
+            },
+
+
 
         },
     })
