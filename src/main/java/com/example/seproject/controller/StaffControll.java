@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
 @RestController
 public class StaffControll {
     @Autowired
@@ -41,6 +40,12 @@ public class StaffControll {
         Internal_staff internal_staff=i.findByStaffIdcard(StaffIdcard);
         internal_staff.setStaffPassword("*******");
         return internal_staff;
+    }
+
+    @GetMapping("/allstaff")
+    public Iterable<Internal_staff> allstaff(){
+        Iterable<Internal_staff> internal_staffs=i.findAll();
+        return internal_staffs;
     }
 
 }

@@ -109,6 +109,12 @@ public class VisitinfoControll {
         return  block;
     }
 
+    @GetMapping("/blockall")
+    public List blockall(){
+        List all=b.findAll();
+        return all;
+    }
+
 
 
 
