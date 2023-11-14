@@ -15,6 +15,25 @@ public class Internal_staff {
     private String staffPosition;
     private String staffPassword;
     private String UUID;
+//副权限
+    private String secondarypower;
+    private String mainpower;
+
+    public String getSecondarypower() {
+        return secondarypower;
+    }
+
+    public void setSecondarypower(String secondarypower) {
+        this.secondarypower = secondarypower;
+    }
+
+    public String getMainpower() {
+        return mainpower;
+    }
+
+    public void setMainpower(String mainpower) {
+        this.mainpower = mainpower;
+    }
 
     public String getUUID() {
         return UUID;

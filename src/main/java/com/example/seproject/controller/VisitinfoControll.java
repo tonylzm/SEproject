@@ -1,6 +1,6 @@
 /*******************************************************************************
  * 文件名：VisitinfoControll.java
- * 功能描述：访客信息控制类
+ * 功能描述：访客信息控制类，主要功能是用来存储修改访客信息的API接口方法
  * 作者：tony lzm
  * 创建时间：2020-09-17 10:00
  * 修改记录：
@@ -8,6 +8,7 @@
 
 package com.example.seproject.controller;
 
+import com.example.seproject.entity.History;
 import com.example.seproject.entity.User;
 import com.example.seproject.entity.block;
 import com.example.seproject.entity.visitinfo;
@@ -16,6 +17,9 @@ import com.example.seproject.jpa.VisitinfoDao;
 import com.example.seproject.jpa.blockDao;
 import com.example.seproject.service.Info;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -89,9 +93,17 @@ public class VisitinfoControll {
         return all;
     }
 
-
-
-
+    @GetMapping("/pagesallinfo")//对数据进行分页
+    public Page<visitinfo> pagesallinfo(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", defaultValue = "8") int pageSize)
+           {
+        // 创建分页请求对象
+        Pageable pageable = PageRequest.of(page, pageSize);
+        // 使用分页请求查询历史数据
+        Page<visitinfo> allinfo = v.findAll(pageable);
+        return allinfo;
+    }
 
     @GetMapping("/findinfo")//前端查看特定访客信息方法，返回一个对象
     public visitinfo findinfo(@RequestParam("visitorPhone")String visitorPhone){
@@ -100,22 +112,29 @@ public class VisitinfoControll {
     }
 
 
-
-
-
     @GetMapping("/blockinfo")//前端查看特定访客信息方法，返回一个对象，为黑名单对象
     public block blockinfo(@RequestParam("visitorPhone")String visitorPhone){
         block block=b.findByVisitorPhone(visitorPhone);
         return  block;
     }
 
-    @GetMapping("/blockall")
+
+    @GetMapping("/blockall")//返回所有黑名单对象
     public List blockall(){
         List all=b.findAll();
         return all;
     }
-
-
+    @GetMapping("/pagesblockall")//对数据进行分页
+    public Page<block> pagesblockall(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", defaultValue = "8") int pageSize)
+    {
+        // 创建分页请求对象
+        Pageable pageable = PageRequest.of(page, pageSize);
+        // 使用分页请求查询历史数据
+        Page<block> blockall = b.findAll(pageable);
+        return blockall;
+    }
 
 
 

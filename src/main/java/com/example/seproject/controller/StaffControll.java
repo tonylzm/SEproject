@@ -24,6 +24,7 @@ public class StaffControll {
     //此方法为向数据库中添加员工信息
     public Internal_staff addStaff(@RequestBody Internal_staff request){
         // request对象包含了前端传入的数据
+        request.setMainpower("系统管理员");
         Internal_staff savedStaff = i.save(request); // 假设VisitInfo类与数据库模型对应
         return savedStaff;
     }
@@ -47,5 +48,18 @@ public class StaffControll {
         Iterable<Internal_staff> internal_staffs=i.findAll();
         return internal_staffs;
     }
+
+    @GetMapping("/updatepower")
+    public String updatepower(
+            @RequestParam("StaffIdcard")String StaffIdcard,
+            @RequestParam("mainpower")String mainpower,
+            @RequestParam("secondarypower")String secondarypower){
+        Internal_staff internal_staff=i.findByStaffIdcard(StaffIdcard);
+        internal_staff.setMainpower(mainpower);
+        internal_staff.setSecondarypower(secondarypower);
+        i.save(internal_staff);
+        return "修改成功";
+    }
+
 
 }
