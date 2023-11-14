@@ -57,7 +57,7 @@
             background-color: #E9EEF3;
             color: #333;
             text-align: center;
-            line-height: 550px;
+            line-height: 570px;
         }
 
         /*body > .el-container {*/
@@ -148,10 +148,7 @@
                                     <el-menu-item index="1-1"@click="changeIframeSrc1">来访管理</el-menu-item>
                                     <el-menu-item index="1-2"@click="changeIframeSrc2">访客信息</el-menu-item>
                                     <el-menu-item index="1-3"@click="changeIframeSrc3">邀约管理</el-menu-item>
-                                    <el-menu-item index="1-4">
-                                        <a href='/toPage?url=/test2'  id="a1"  name="test2.html"  target="i">消息推送</a>
-
-                                    </el-menu-item>
+                                    <el-menu-item index="1-4">消息推送</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
                             <el-submenu index="2">
@@ -197,12 +194,16 @@
 
                     <!--                    </el-col>-->
                 </el-row>
-                <img src="/QRcode.png"style="width: 30px; height: 30px;margin-right: 20px;">
+<!--                <img src="/static/img/logo.png"style="width: 30px; height: 30px;">-->
+
             </el-aside>
             <el-container>
                 <el-main>
+<!--                    <iframe style="width: 100%;height: 100%" frameborder="0"-->
+<!--                    ></iframe>-->
+                    <iframe :src="flowSrc" style="height:100%; width:100%;margin:0;border:0;" v-if="loading" ref="iframeId" id="myFrameId" name="myFrameName">
 
-                    <iframe style="width: 100%;height: 100%" frameborder="0"></iframe>
+                    </iframe>
                 </el-main>
                 <el-footer>
                     <div class="contact-us">
@@ -225,9 +226,11 @@
         el:'#app',
 
         data: {
-            loading: false,
+            // loading: false,
             currentLocation:'',
-
+            loading: true,
+            flowSrc: '',
+            showReture: false
 
         },
         methods: {
@@ -236,7 +239,7 @@
             },
             changeIframeSrc1: function() {
                 var iframe = document.querySelector("iframe");
-                iframe.src = "./Layout.html";
+                iframe.src = "/static/Layout.html";
             },
             changeIframeSrc2: function() {
                 var iframe = document.querySelector("iframe");
@@ -244,8 +247,20 @@
             },
             changeIframeSrc3: function() {
                 var iframe = document.querySelector("iframe");
-                iframe.src = "/static/ww.html";
-            }
+                iframe.src = "/static/Layout.html";
+            },
+            //解决iframe框架不能及时刷新的问题
+            handleIframe(e) {
+                console.log('切换', e)
+                this.warehouse.cloudId = e
+                this.loading = false
+                this.flowSrc = 'http://10.0.11.9:2080/#/grain-room/condition/current?user=grainszy&pass=bupt%40Htl301&grainRoomId=' + this.warehouse.cloudId;  //直接给flowSrc赋值链接
+                setTimeout(()=>{
+                    this.loading = true
+                },1000)
+            },
+
+
 
         },
     })
