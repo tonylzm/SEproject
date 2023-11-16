@@ -184,7 +184,8 @@
 
                 </el-table>
                 </el-tabs>
-                <el-pagination  @current-change="handlePageChange" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
+                <el-pagination v-if="pagin1"  @current-change="handlePageChange1" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
+                <el-pagination v-if="pagin"  @current-change="handlePageChange" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
             </el-header>
 
 
@@ -207,6 +208,8 @@
                 content1:"",
                 dialogVisible:false,
                 dialogVisible1:false,
+                pagin:false,
+                pagin1:false,
             /*   tableData: [
                    { number: '',
                        visitplace: '',
@@ -218,7 +221,7 @@
                 tableData2:[],
                 //分页数据
                 page: 1, // 当前页码
-                pageSize: 8, // 每页显示的条数
+                pageSize: 4, // 每页显示的条数
                 total:0,
 
                 visitor: {
@@ -365,6 +368,8 @@
                     this.showTable1 = false;
                     this.showTable2 = false;
                     this.showTable3 = false;
+                    this.pagin=true;
+                    this.pagin1=false;
                     this.getTableData(this.tabname);
 
                 } else if (tab.name === 'reviewed') {
@@ -374,6 +379,8 @@
                     this.showTable1 = true;
                     this.showTable2 = false;
                     this.showTable3 = false;
+                    this.pagin=true;
+                    this.pagin1=false;
                     this.getTableData(this.tabname);
 
                 } else if (tab.name === 'blacklist') {
@@ -382,6 +389,8 @@
                     this.showTable1 = false;
                     this.showTable2 = true;
                     this.showTable3 = true;
+                    this.pagin=false;
+                    this.pagin1=true;
                     this. getBlockTableData();
 
                 }
@@ -390,6 +399,11 @@
             handlePageChange(page) {
                 this.page = page;
                 this.getTableData(this.tabname);
+                // this. getBlockTableData();
+            },
+            handlePageChange1(page) {
+                this.page = page;
+                // this.getTableData(this.tabname);
                 this. getBlockTableData();
             },
 
