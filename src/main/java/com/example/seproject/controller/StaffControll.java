@@ -51,7 +51,7 @@ public class StaffControll {
         return internal_staffs;
     }
 
-    @GetMapping("/updatepower")
+    @GetMapping("/updatepower")//编辑员工权限，需要主管权限
     public String updatepower(
             @RequestParam("edit") String edit,
             @RequestParam("StaffIdcard") String StaffIdcard,

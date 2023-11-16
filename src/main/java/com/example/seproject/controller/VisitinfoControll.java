@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Objects;
+
 //
 @Controller
 @RestController
@@ -96,13 +98,18 @@ public class VisitinfoControll {
     @GetMapping("/pagesallinfo")//对数据进行分页
     public Page<visitinfo> pagesallinfo(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "pageSize", defaultValue = "8") int pageSize)
+            @RequestParam(value = "pageSize", defaultValue = "8") int pageSize,
+            @RequestParam(value = "status") String status)
            {
         // 创建分页请求对象
         Pageable pageable = PageRequest.of(page, pageSize);
-        // 使用分页请求查询历史数据
-        Page<visitinfo> allinfo = v.findAll(pageable);
-        return allinfo;
+               if(Objects.equals(status, "unreviewed")){
+                   Page<visitinfo> allinfo = v.findByApplicationStatusIsNull(pageable);
+                   return allinfo;
+               }else {
+                     Page<visitinfo> allinfo = v.findByApplicationStatusIsNotNull(pageable);
+                     return allinfo;
+               }
     }
 
     @GetMapping("/findinfo")//前端查看特定访客信息方法，返回一个对象
@@ -127,8 +134,8 @@ public class VisitinfoControll {
     @GetMapping("/pagesblockall")//对数据进行分页
     public Page<block> pagesblockall(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "pageSize", defaultValue = "8") int pageSize)
-    {
+            @RequestParam(value = "pageSize", defaultValue = "8") int pageSize
+           ){
         // 创建分页请求对象
         Pageable pageable = PageRequest.of(page, pageSize);
         // 使用分页请求查询历史数据
