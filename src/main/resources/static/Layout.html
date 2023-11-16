@@ -135,33 +135,51 @@
                     </el-table-column>
                     </el-table-column>
                     <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" >
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" icon="el-icon-check" @click="handleCheck(scope.row)" size="small">查看</el-button>
+                        <template slot-scope="scope">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <el-button type="primary" icon="el-icon-check" @click="handleCheck(scope.row.visitorPhone)" size="small">查看</el-button>
+                                <el-dialog title="访客信息" :visible.sync="dialogVisible" width="30%">
+                                    <span>{{ content }}</span>
+                                    <span slot="footer" class="dialog-footer">
+                            <el-button @click="dialogVisible = false">取 消</el-button>
+                            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                            </span>
+                                </el-dialog>
 
-                        </div>
+                            </div>
+                        </template>
                     </el-table-column>
 
-
                 </el-table>
+                    </el-table>
                 <el-table v-if="showTable2":data="tableData2" :columns="tableColumns">
                     <el-table-column prop="number" label="序号" width="60">
                     </el-table-column>
-                    <el-table-column prop="name" label="访客姓名" width="100">
+                    <el-table-column prop="visitorName" label="访客姓名" width="100">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="blackreason" label="拉黑原因" width="180">
+                    <el-table-column prop="blockreason" label="拉黑原因" width="180">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="blacktime" label="拉黑时间" width="160">
+                    <el-table-column prop="blocktime" label="拉黑时间" width="160">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="operator" label="操作员" width="100">
+                    <el-table-column prop="blockpeople" label="操作员" width="100">
                     </el-table-column>
                     <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" >
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" icon="el-icon-check" @click="handleMove(scope.row)" size="small">移除</el-button>
-                            <el-button type="danger" icon="el-icon-close" @click="handleCheck(scope.row)" size="small">查看</el-button>
-                        </div>
+                        <template slot-scope="scope">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <el-button type="primary" icon="el-icon-check" @click="handleMove(scope.row.visitorPhone)" size="small">移除</el-button>
+                                <el-button type="danger" icon="el-icon-close" @click="handleCheck1(scope.row.visitorPhone)" size="small">查看</el-button>
+                                <el-dialog title="黑名单信息" :visible.sync="dialogVisible1" width="30%">
+                                    <span>{{ content1 }}</span>
+                                    <span slot="footer" class="dialog-footer">
+                            <el-button @click="dialogVisible1 = false">取 消</el-button>
+                            <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
+                            </span>
+                                </el-dialog>
+                            </div>
+                        </template>
                     </el-table-column>
 
                 </el-table>
@@ -185,6 +203,10 @@
                 showTable1:false ,
                 showTable2:false,
                 showTable3:false,
+                content:"",
+                content1:"",
+                dialogVisible:false,
+                dialogVisible1:false,
             /*   tableData: [
                    { number: '',
                        visitplace: '',
@@ -216,6 +238,51 @@
             {
                 this.showTable = true;
                 this.showTable1 = true;
+            },
+            handleCheck1(visitorPhone){
+                //黑名单中查看方法
+                this.dialogVisible1 = true;
+                axios.get('/blockinfo', {
+                    params: {
+                        visitorPhone: visitorPhone
+                    }
+                })
+                    .then(response => {
+                        this.content1 = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
+            handleMove(visitorPhone) {
+                //黑名单移除方法
+                axios.get('/removeblock', {
+                    params: {
+                        visitorPhone: visitorPhone
+                    }
+                })
+                    .then(response => {
+                        this.content = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
+            handleCheck(visitorPhone) {
+                //查看访客操作
+                this.dialogVisible = true;
+                // console.log(dialogVisible)
+                axios.get('/findinfo', {
+                    params: {
+                        visitorPhone: visitorPhone
+                    }
+                })
+                    .then(response => {
+                        this.content = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             },
             handleReviewedClick() {
                 // 处理已审核记录标签页点击事件
