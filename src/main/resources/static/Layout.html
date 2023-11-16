@@ -1,6 +1,4 @@
-
 <!DOCTYPE html >
-
 <html xmlns:th="http://www.thymeleaf.org" lang="en" >
 <head>
     <meta charset="UTF-8">
@@ -13,7 +11,8 @@
         el-header {
             background-color: #B3C0D1;
             color: #333;
-            line-height: 600px;
+            line-height: 500px;
+            /*height: 100%;*/
         }
 
         el-aside {
@@ -44,21 +43,19 @@
                     <el-tab-pane label="黑名单" name="blacklist"></el-tab-pane>
 
                     <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
-
-
                     <el-main v-if="showTable0" style="text-align: left;">
-                <label>访客姓名：<input v-model="visitor.name" /></label>
-                <label>访客手机：<input v-model="visitor.phone" /></label>
-                <label>访客事由：<input v-model="visitor.reason" /></label><br/>
-                <label>访客部门：<input v-model="visitor.department" /></label>
-                <label>邀 约 人 ：<input v-model="visitor.inviter" /></label>
-                <label>访客时间：
-                    <input type="datetime-local" v-model="visitor.startTime" />
-                    至
-                    <input type="datetime-local" v-model="visitor.endTime" />
-                </label><br/>
-                <button>搜索</button>
-            </el-main>
+                        <label>访客姓名：<input v-model="visitor.name" /></label>
+                        <label>访客手机：<input v-model="visitor.phone" /></label>
+                        <label>访客事由：<input v-model="visitor.reason" /></label><br/>
+                        <label>访客部门：<input v-model="visitor.department" /></label>
+                        <label>邀 约 人 ：<input v-model="visitor.inviter" /></label>
+                        <label>访客时间：
+                            <input type="datetime-local" v-model="visitor.startTime" />
+                                至
+                            <input type="datetime-local" v-model="visitor.endTime" />
+                        </label><br/>
+                        <button>搜索</button>
+                    </el-main>
                     <el-main v-if="showTable3" style="text-align: left; ">
                         <label>姓名：<input v-model="visitor.name" /></label>
                         <label>操作员 ：<input v-model="visitor.operator" /></label>
@@ -144,7 +141,7 @@
                         </div>
                     </el-table-column>
 
-                </el-table>
+
                 </el-table>
                 <el-table v-if="showTable2":data="tableData2" :columns="tableColumns">
                     <el-table-column prop="number" label="序号" width="60">
@@ -169,21 +166,11 @@
 
                 </el-table>
                 </el-tabs>
+                <el-pagination  @current-change="handlePageChange" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
             </el-header>
 
 
-
-
-
-
-
-
-
-
 </div>
-
-
-
 
 
 </body>
@@ -192,6 +179,7 @@
         el: '#app',
         data() {
             return {
+                tabname:'',
                 showTable0:true ,
                 showTable:true ,
                 showTable1:false ,
@@ -206,6 +194,10 @@
                 tableData:[],
                 tableData1:[],
                 tableData2:[],
+                //分页数据
+                page: 1, // 当前页码
+                pageSize: 8, // 每页显示的条数
+                total:0,
 
                 visitor: {
                     name: '',
@@ -300,56 +292,22 @@
             handleTabClick(tab,event) {
                 console.log(tab, event);//xx
                 if (tab.name === 'unreviewed') {
+                    this.tabname=tab.name;
                     this.showTable0 = true;
                     this.showTable = true;
                     this.showTable1 = false;
                     this.showTable2 = false;
                     this.showTable3 = false;
-                    axios.get('/allinfo')
-                        .then(response => {
-                            // 在这里处理后端传来的数据
-
-                            var tableData = response.data;
-                            // const applicationStatusArray = tableData.map(item => item.applicationStatus);
-                            // console.log(applicationStatusArray);
-                            const filteredTableData = tableData.filter(item => item.applicationStatus == null);
-                            const filteredTableData1 = tableData.filter(item => item.applicationStatus !== null);
-                            // 调用渲染函数，传入后端返回的数据
-                          /*  renderTable(tableData);*/
-                            this.tableData = filteredTableData;
-                            this.tableData1 =filteredTableData1;
-                            // this.tableData2 = tableData;
-
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                    axios.get('/blockinfo')
-                        .then(response => {
-                            // 在这里处理后端传来的数据
-
-                            var tableData = response.data;
-                            // const applicationStatusArray = tableData.map(item => item.applicationStatus);
-                            // console.log(applicationStatusArray);
-                            const filteredTableData = tableData.filter(item => item.applicationStatus == null);
-                            const filteredTableData1 = tableData.filter(item => item.applicationStatus !== null);
-                            // 调用渲染函数，传入后端返回的数据
-                            /*  renderTable(tableData);*/
-                            this.tableData = filteredTableData;
-                            this.tableData1 =filteredTableData1;
-                            // this.tableData2 = tableData;
-
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
+                    this.getTableData(this.tabname);
 
                 } else if (tab.name === 'reviewed') {
+                    this.tabname=tab.name;
                     this.showTable0 = true;
                     this.showTable = false;
                     this.showTable1 = true;
                     this.showTable2 = false;
                     this.showTable3 = false;
+                    this.getTableData(this.tabname);
 
                 } else if (tab.name === 'blacklist') {
                     this.showTable0 = false;
@@ -357,9 +315,60 @@
                     this.showTable1 = false;
                     this.showTable2 = true;
                     this.showTable3 = true;
+                    this. getBlockTableData();
 
                 }
-            }
+            },
+            //后端获取数据
+            handlePageChange(page) {
+                this.page = page;
+                this.getTableData(this.tabname);
+                this. getBlockTableData();
+            },
+
+            getTableData(tabname) {
+                axios
+                    .get('/pagesallinfo', {
+                        params: {
+                            page: this.page - 1,
+                            pageSize: this.pageSize,
+                            status:tabname,
+                        }
+                    })
+                    .then(response => {
+                        var tableData = response.data.content;
+                        // const applicationStatusArray = tableData.map(item => item.applicationStatus);
+                        // console.log(applicationStatusArray);
+                        const filteredTableData = tableData.filter(item => item.applicationStatus == null);
+                        const filteredTableData1 = tableData.filter(item => item.applicationStatus !== null);
+                        this.tableData = filteredTableData;
+                        this.tableData1=filteredTableData1;
+                        this.total = response.data.totalElements;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            created() {
+                this.getTableData();
+            },
+            getBlockTableData() {
+                axios
+                    .get('/pagesblockall', {
+                        params: {
+                            page: this.page - 1,
+                            pageSize: this.pageSize,
+                        }
+                    })
+                    .then(response => {
+                        var tableData = response.data.content;
+                        this.tableData2=tableData;
+                        this.total = response.data.totalElements;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
         }
 
     });

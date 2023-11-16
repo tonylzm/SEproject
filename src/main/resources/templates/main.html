@@ -58,6 +58,8 @@
             color: #333;
             text-align: center;
             line-height: 570px;
+            overflow:hidden hidden;
+
         }
 
         /*body > .el-container {*/
@@ -198,11 +200,8 @@
 
             </el-aside>
             <el-container>
-                <el-main>
-<!--                    <iframe style="width: 100%;height: 100%" frameborder="0"-->
-<!--                    ></iframe>-->
+                <el-main >
                     <iframe :src="flowSrc" style="height:100%; width:100%;margin:0;border:0;" v-if="loading" ref="iframeId" id="myFrameId" name="myFrameName">
-
                     </iframe>
                 </el-main>
                 <el-footer>
@@ -212,7 +211,7 @@
                         <span class="title">设计：</span>
                         <span class="team-name">如如队</span>
                     </div>
-                    </el-footer>
+                </el-footer>
             </el-container>
         </el-container>
     </el-container>
@@ -247,7 +246,7 @@
             },
             changeIframeSrc3: function() {
                 var iframe = document.querySelector("iframe");
-                iframe.src = "/static/Layout.html";
+                iframe.src = "/static/test3.html";
             },
             //解决iframe框架不能及时刷新的问题
             handleIframe(e) {
