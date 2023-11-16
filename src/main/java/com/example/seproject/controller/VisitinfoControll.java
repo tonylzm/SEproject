@@ -46,7 +46,8 @@ public class VisitinfoControll {
         if(visitinfo!=null){
             String status=visitinfo.getApplicationStatus();
             if(status==null){
-                return "该访客存在";
+                v.save(visitInfo);
+                return "该访客未被审核";
             }
             else if(status.equals("拉黑")){
                 return "该访客已拉黑";
