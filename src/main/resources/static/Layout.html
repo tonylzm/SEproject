@@ -185,6 +185,7 @@
                 </el-table>
                 </el-tabs>
                 <el-pagination v-if="pagin1"  @current-change="handlePageChange1" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
+                <el-pagination v-if="pagin2"  @current-change="handlePageChange2" :current-page="page1" :page-size="pageSize" :total="total"></el-pagination>
                 <el-pagination v-if="pagin"  @current-change="handlePageChange" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
             </el-header>
 
@@ -210,6 +211,7 @@
                 dialogVisible1:false,
                 pagin:false,
                 pagin1:false,
+                pagin2:false,
             /*   tableData: [
                    { number: '',
                        visitplace: '',
@@ -220,7 +222,6 @@
                 tableData1:[],
                 tableData2:[],
                 //分页数据
-                page: 1, // 当前页码
                 pageSize: 4, // 每页显示的条数
                 total:0,
 
@@ -370,7 +371,8 @@
                     this.showTable3 = false;
                     this.pagin=true;
                     this.pagin1=false;
-                    this.getTableData(this.tabname);
+                    this.pagin2=false;
+                    this.getTableData(this.tabname,1);
 
                 } else if (tab.name === 'reviewed') {
                     this.tabname=tab.name;
@@ -379,9 +381,10 @@
                     this.showTable1 = true;
                     this.showTable2 = false;
                     this.showTable3 = false;
-                    this.pagin=true;
+                    this.pagin=false;
+                    this.pagin2=true;
                     this.pagin1=false;
-                    this.getTableData(this.tabname);
+                    this.getTableData(this.tabname,1);
 
                 } else if (tab.name === 'blacklist') {
                     this.showTable0 = false;
@@ -390,40 +393,39 @@
                     this.showTable2 = true;
                     this.showTable3 = true;
                     this.pagin=false;
+                    this.pagin2=false;
                     this.pagin1=true;
-                    this. getBlockTableData();
+                    this. getBlockTableData(1);
 
                 }
             },
             //后端获取数据
             handlePageChange(page) {
-                this.page = page;
-                this.getTableData(this.tabname);
-                // this. getBlockTableData();
+                this.getTableData(this.tabname,page);
             },
             handlePageChange1(page) {
-                this.page = page;
-                // this.getTableData(this.tabname);
-                this. getBlockTableData();
+                this. getBlockTableData(page);
             },
-
-            getTableData(tabname) {
+            handlePageChange2(page) {
+                this.getTableData(this.tabname,page);
+            },
+            getTableData(tabname,page) {
                 axios
                     .get('/pagesallinfo', {
                         params: {
-                            page: this.page - 1,
+                            page: page - 1,
                             pageSize: this.pageSize,
                             status:tabname,
                         }
                     })
                     .then(response => {
                         var tableData = response.data.content;
-                        // const applicationStatusArray = tableData.map(item => item.applicationStatus);
-                        // console.log(applicationStatusArray);
-                        const filteredTableData = tableData.filter(item => item.applicationStatus == null);
-                        const filteredTableData1 = tableData.filter(item => item.applicationStatus !== null);
-                        this.tableData = filteredTableData;
-                        this.tableData1=filteredTableData1;
+                        if(tabname==='unreviewed') {
+                            this.tableData = tableData;
+                        }
+                        else if(tabname==='reviewed') {
+                            this.tableData1 = tableData;
+                        }
                         this.total = response.data.totalElements;
                     })
                     .catch(error => {
@@ -433,11 +435,11 @@
             created() {
                 this.getTableData();
             },
-            getBlockTableData() {
+            getBlockTableData(page) {
                 axios
                     .get('/pagesblockall', {
                         params: {
-                            page: this.page - 1,
+                            page: page-1,
                             pageSize: this.pageSize,
                         }
                     })

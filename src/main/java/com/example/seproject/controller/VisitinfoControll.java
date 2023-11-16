@@ -98,7 +98,7 @@ public class VisitinfoControll {
     @GetMapping("/pagesallinfo")//对数据进行分页
     public Page<visitinfo> pagesallinfo(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "pageSize", defaultValue = "8") int pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "4") int pageSize,
             @RequestParam(value = "status") String status)
            {
         // 创建分页请求对象
@@ -111,7 +111,7 @@ public class VisitinfoControll {
                      return allinfo;
                }
     }
-
+//封控
     @GetMapping("/findinfo")//前端查看特定访客信息方法，返回一个对象
     public visitinfo findinfo(@RequestParam("visitorPhone")String visitorPhone){
         visitinfo visitinfo=v.findByVisitorPhone(visitorPhone);
