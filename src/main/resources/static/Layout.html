@@ -51,7 +51,7 @@
             <el-tab-pane label="已审核记录" name="reviewed"></el-tab-pane>
             <el-tab-pane label="黑名单" name="blacklist"></el-tab-pane>
 
-            <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
+            <span>欢迎，xx（工号： {{ storedUsername }}）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
             <el-main v-if="showTable0" style="text-align: left;">
                 <label>访客姓名：<input v-model="visitor.name" /></label>
                 <label>访客手机：<input v-model="visitor.phone" /></label>
@@ -95,7 +95,7 @@
                 <el-table-column prop="duration" label="访问时长" width="100">
                 </el-table-column>
                 </el-table-column>
-                <el-table-column prop="control" label="管控" width="80">
+                <el-table-column prop="lockinfo" label="管控" width="80">
                 </el-table-column>
                 </el-table-column>
                 <el-table-column prop="blacklist" label="黑名单" width="80">
@@ -137,7 +137,7 @@
                 <el-table-column prop="duration" label="访问时长" width="100">
                 </el-table-column>
                 </el-table-column>
-                <el-table-column prop="control" label="管控" width="80">
+                <el-table-column prop="lockinfo" label="管控" width="80">
                 </el-table-column>
                 </el-table-column>
                 <el-table-column prop="applicationStatus" label="状态" width="80">
@@ -157,40 +157,40 @@
                                           <span style="display: inline-block; width: 25%;">
                                             <strong>访客姓名：</strong> {{ content.visitorName }}
                                           </span>
-                                                                                <span style="display: inline-block; width: 30%;">
+                                        <span style="display: inline-block; width: 30%;">
                                             <strong>所属公司：</strong> {{ content.affiliatedUnit }}
                                           </span>
-                                                                                <span style="display: inline-block; width: 20%;">
+                                        <span style="display: inline-block; width: 20%;">
                                             <strong>管控的内容：</strong> {{ content.accessDetails }}
                                           </span>
-                                                                            </div>
-                                                                            <div>
+                                    </div>
+                                    <div>
                                           <span style="display: inline-block; width: 30%;">
                                             <strong>入园事由：</strong> {{ content.visitreason}}
                                           </span>
-                                                                                <span style="display: inline-block; width: 30%;">
+                                        <span style="display: inline-block; width: 30%;">
                                             <strong>联系方式：</strong> {{ content.visitorPhone }}
                                           </span>
-                                                                                <span style="display: inline-block; width: 20%;">
+                                        <span style="display: inline-block; width: 20%;">
                                             <strong>邀约人的内容：</strong> {{ content.inviter }}
                                           </span>
-                                                                            </div>
-                                                                            <div>
+                                    </div>
+                                    <div>
                                           <span style="display: inline-block; width: 30%;">
                                             <strong>物流单号：</strong> {{ content.logisticsNumber }}
                                           </span>
-                                                                                <span style="display: inline-block; width: 45%;">
+                                        <span style="display: inline-block; width: 45%;">
                                             <strong>访问区域的内容：</strong> {{ content.visitAreas }}
                                           </span>
-                                                                                <span style="display: inline-block; width: 15%;">
+                                        <span style="display: inline-block; width: 15%;">
                                             <strong>车牌号：</strong> {{ content.licensePlate }}
                                           </span>
-                                                                            </div>
-                                                                            <div>
+                                    </div>
+                                    <div>
                                           <span style="display: inline-block; width: 20%;">
                                             <strong>停靠车位：</strong> {{ content.parkingSpace }}
                                           </span>
-                                                                                <span style="display: inline-block; width: 20%;">
+                                        <span style="display: inline-block; width: 20%;">
                                             <strong>黑名单的内容：</strong> {{ content.blacklist }}
                                           </span>
                                     </div>
@@ -240,34 +240,34 @@
                             <el-button type="primary" icon="el-icon-check" @click="handleMove(scope.row.visitorPhone)" size="small">移除</el-button>
                             <el-button type="danger" icon="el-icon-close" @click="handleCheck1(scope.row.visitorPhone)" size="small">查看</el-button>
                             <el-dialog title="黑名单详细信息" :visible.sync="dialogVisible1" width="40%">
-                        <div >
-                                   <div style="display: flex; justify-content: center;">
-                                       <img src="/static/img/portrait.jpeg" style="width: 100px; height: 100px;">
-                                   </div>
-                            <div>
-                                <div class="info-item">
-                                    <strong>访客姓名：</strong>
-                                    <div class="content">{{ content.visitorName }}</div>
+                                <div >
+                                    <div style="display: flex; justify-content: center;">
+                                        <img src="/static/img/portrait.jpeg" style="width: 100px; height: 100px;">
+                                    </div>
+                                    <div>
+                                        <div class="info-item">
+                                            <strong>访客姓名：</strong>
+                                            <div class="content">{{ content.visitorName }}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <strong>所属公司：</strong>
+                                            <div class="content">{{ content.affiliatedUnit }}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <strong>拉黑原因：</strong>
+                                            <div class="content">{{ content.blockreason }}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <strong>拉黑日期：</strong>
+                                            <div class="content">{{ content.blocktime }}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <strong>操作员：</strong>
+                                            <div class="content">{{ content.blockpeople }}</div>
+                                        </div>
+                                        <el-input v-model="newReason" placeholder="请输入拉黑原因"></el-input>
+                                    </div>
                                 </div>
-                                <div class="info-item">
-                                    <strong>所属公司：</strong>
-                                    <div class="content">{{ content.affiliatedUnit }}</div>
-                                </div>
-                                <div class="info-item">
-                                    <strong>拉黑原因：</strong>
-                                    <div class="content">{{ content.blockreason }}</div>
-                                </div>
-                                <div class="info-item">
-                                    <strong>拉黑日期：</strong>
-                                    <div class="content">{{ content.blocktime }}</div>
-                                </div>
-                                <div class="info-item">
-                                    <strong>操作员：</strong>
-                                    <div class="content">{{ content.blockpeople }}</div>
-                                </div>
-                                <el-input v-model="newReason" placeholder="请输入拉黑原因"></el-input>
-                            </div>
-                        </div>
 
 
 
@@ -282,7 +282,9 @@
 
             </el-table>
         </el-tabs>
-        <el-pagination  @current-change="handlePageChange" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
+        <el-pagination v-if="pagin1"  @current-change="handlePageChange1" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
+        <el-pagination v-if="pagin2"  @current-change="handlePageChange2" :current-page="page1" :page-size="pageSize" :total="total"></el-pagination>
+        <el-pagination v-if="pagin"  @current-change="handlePageChange" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
     </el-header>
 
 
@@ -302,6 +304,11 @@
                 showTable1:false ,
                 showTable2:false,
                 showTable3:false,
+                pagin:false,
+                pagin1:false,
+                pagin2:false,
+                //1
+                storedUsername:localStorage.getItem('username'),
                 content: {
                     visitorName: '',
                     affiliatedUnit: '',
@@ -365,7 +372,8 @@
                 this.dialogVisible1 = false;
                 axios.post('/addreason', {
                     visitorPhone: visitorPhone, // 假设这是访客的手机号
-                    blockreason: this.newReason
+                    blockreason: this.newReason,
+                    blockpeople:this.storedUsername,
                 }).then(response => {
                     // 更新 content 中的 blockreason
                     this.content.blockreason = this.newReason;
@@ -452,6 +460,7 @@
                 // 处理黑名单标签页点击事件
                 console.log('黑名单标签页被点击了');
             },
+            //2
             handleApprove(visitorPhone) {
                 // console.log('批准点击，访客电话:', visitorPhone);
 
@@ -460,26 +469,37 @@
                 axios.get('/vet', {
 
                     params: {
-                        visitorPhone:visitorPhone
+                        visitorPhone:visitorPhone,
+                        edit:this.storedUsername,
                     }
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        if (response.data==="审核成功")
+                            alert("批准成功");
+                        else
+                            alert("权限不足");
                     })
                     .catch(function (error) {
                         console.error(error);
                     });
             },
+            //3
             handleReject(visitorPhone) {
                 // 拒绝操作的逻辑
                 axios.get('/refuse', {
 
                     params: {
-                        visitorPhone:visitorPhone
+                        visitorPhone:visitorPhone,
+                        edit:this.storedUsername,
                     }
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        if(response.data==="拒绝成功")
+                            alert("拒绝成功");
+                        else
+                            alert("权限不足");
                     })
                     .catch(function (error) {
                         console.error(error);
@@ -525,7 +545,10 @@
                     this.showTable1 = false;
                     this.showTable2 = false;
                     this.showTable3 = false;
-                    this.getTableData(this.tabname);
+                    this.pagin=true;
+                    this.pagin1=false;
+                    this.pagin2=false;
+                    this.getTableData(this.tabname,1);
 
                 } else if (tab.name === 'reviewed') {
                     this.tabname=tab.name;
@@ -534,7 +557,10 @@
                     this.showTable1 = true;
                     this.showTable2 = false;
                     this.showTable3 = false;
-                    this.getTableData(this.tabname);
+                    this.pagin=false;
+                    this.pagin2=true;
+                    this.pagin1=false;
+                    this.getTableData(this.tabname,1);
 
                 } else if (tab.name === 'blacklist') {
                     this.showTable0 = false;
@@ -542,34 +568,39 @@
                     this.showTable1 = false;
                     this.showTable2 = true;
                     this.showTable3 = true;
-                    this. getBlockTableData();
+                    this.pagin=false;
+                    this.pagin2=false;
+                    this.pagin1=true;
+                    this. getBlockTableData(1);
 
                 }
             },
-            //后端获取数据
             handlePageChange(page) {
-                this.page = page;
-                this.getTableData(this.tabname);
-                this. getBlockTableData();
+                this.getTableData(this.tabname,page);
             },
-
-            getTableData(tabname) {
+            handlePageChange1(page) {
+                this. getBlockTableData(page);
+            },
+            handlePageChange2(page) {
+                this.getTableData(this.tabname,page);
+            },
+            getTableData(tabname,page) {
                 axios
                     .get('/pagesallinfo', {
                         params: {
-                            page: this.page - 1,
+                            page: page - 1,
                             pageSize: this.pageSize,
                             status:tabname,
                         }
                     })
                     .then(response => {
                         var tableData = response.data.content;
-                        // const applicationStatusArray = tableData.map(item => item.applicationStatus);
-                        // console.log(applicationStatusArray);
-                        const filteredTableData = tableData.filter(item => item.applicationStatus == null);
-                        const filteredTableData1 = tableData.filter(item => item.applicationStatus !== null);
-                        this.tableData = filteredTableData;
-                        this.tableData1=filteredTableData1;
+                        if(tabname==='unreviewed') {
+                            this.tableData = tableData;
+                        }
+                        else if(tabname==='reviewed') {
+                            this.tableData1 = tableData;
+                        }
                         this.total = response.data.totalElements;
                     })
                     .catch(error => {
@@ -579,11 +610,11 @@
             created() {
                 this.getTableData();
             },
-            getBlockTableData() {
+            getBlockTableData(page) {
                 axios
                     .get('/pagesblockall', {
                         params: {
-                            page: this.page - 1,
+                            page: page-1,
                             pageSize: this.pageSize,
                         }
                     })
@@ -602,4 +633,3 @@
 
 </script>
 </html>
-//123123
