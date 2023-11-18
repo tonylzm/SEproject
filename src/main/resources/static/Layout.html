@@ -42,7 +42,7 @@
                     <el-tab-pane label="已审核记录" name="reviewed"></el-tab-pane>
                     <el-tab-pane label="黑名单" name="blacklist"></el-tab-pane>
 
-                    <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
+                    <span>欢迎，xx（工号： {{ storedUsername }}）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
                     <el-main v-if="showTable0" style="text-align: left;">
                         <label>访客姓名：<input v-model="visitor.name" /></label>
                         <label>访客手机：<input v-model="visitor.phone" /></label>
@@ -86,7 +86,7 @@
                     <el-table-column prop="duration" label="访问时长" width="100">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="control" label="管控" width="80">
+                    <el-table-column prop="lockinfo" label="管控" width="80">
                     </el-table-column>
                     </el-table-column>
                     <el-table-column prop="blacklist" label="黑名单" width="80">
@@ -128,7 +128,7 @@
                     <el-table-column prop="duration" label="访问时长" width="100">
                     </el-table-column>
                     </el-table-column>
-                    <el-table-column prop="control" label="管控" width="80">
+                    <el-table-column prop="lockinfo" label="管控" width="80">
                     </el-table-column>
                     </el-table-column>
                     <el-table-column prop="applicationStatus" label="状态" width="80">
@@ -190,6 +190,9 @@
             </el-header>
 
 
+
+
+
 </div>
 
 
@@ -212,6 +215,7 @@
                 pagin:false,
                 pagin1:false,
                 pagin2:false,
+                storedUsername:localStorage.getItem('username'),
             /*   tableData: [
                    { number: '',
                        visitplace: '',
@@ -304,11 +308,16 @@
                 axios.get('/vet', {
 
                     params: {
-                        visitorPhone:visitorPhone
+                        visitorPhone:visitorPhone,
+                        edit:this.storedUsername,
                     }
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        if (response.data==="审核成功")
+                            alert("批准成功");
+                        else
+                            alert("权限不足");
                     })
                     .catch(function (error) {
                         console.error(error);
@@ -319,11 +328,16 @@
                 axios.get('/refuse', {
 
                     params: {
-                        visitorPhone:visitorPhone
+                        visitorPhone:visitorPhone,
+                        edit:this.storedUsername,
                     }
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        if(response.data==="拒绝成功")
+                            alert("拒绝成功");
+                        else
+                            alert("权限不足");
                     })
                     .catch(function (error) {
                         console.error(error);

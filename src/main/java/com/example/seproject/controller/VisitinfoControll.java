@@ -15,7 +15,9 @@ import com.example.seproject.entity.visitinfo;
 import com.example.seproject.jpa.UserDao;
 import com.example.seproject.jpa.VisitinfoDao;
 import com.example.seproject.jpa.blockDao;
+import com.example.seproject.service.Check;
 import com.example.seproject.service.Info;
+import com.example.seproject.service.LockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
 
 //
 @Controller
@@ -39,10 +42,15 @@ public class VisitinfoControll {
     blockDao b;
     @Autowired
     Info info;
+    @Autowired
+    LockService lockService;
+    @Autowired
+    Check check;
 
     @PostMapping("/addinfo")//前端添加访客信息方法,如果有未访问完的访客信息，不允许添加
     public String addInfo(@RequestBody visitinfo visitInfo) {
         visitinfo visitinfo=v.findByVisitorPhone(visitInfo.getVisitorPhone());
+        lockService.lockpower(visitInfo);
         if(visitinfo!=null){
             String status=visitinfo.getApplicationStatus();
             if(status==null){
@@ -184,19 +192,37 @@ public class VisitinfoControll {
 
 
     @GetMapping("/vet")//前端同意审核访客方法
-    public visitinfo vet(@RequestParam("visitorPhone")String visitorPhone) {
+    public String vet(
+            @RequestParam("visitorPhone")String visitorPhone,
+            @RequestParam("edit") String edit
+    ) {
         // 查找具有特定 visitor_phone 的访客
         visitinfo visitor = v.findByVisitorPhone(visitorPhone);
+        String lockinfo=visitor.getLockinfo();
         if (visitor != null) {
-            // 修改 applicationStatus 的值为 "通过"
-            visitor.setApplicationStatus("通过");
-            v.save(visitor);
-            info.infooperate(visitor);
+            switch (lockinfo){
+                case "管控":
+                    if (check.checkpower(edit).contains("主管")) {
+                        visitor.setApplicationStatus("通过");
+                        v.save(visitor);
+                        info.infooperate(visitor);
+                    }
+                    else{
+                        return "权限不足";
+                    }
+                    break;
+                default:
+                    visitor.setApplicationStatus("通过");
+                    v.save(visitor);
+                    info.infooperate(visitor);
+                    break;
+
+            }
         } else {
             return null;
             // 处理访客未找到的情况，例如抛出异常或其他操作
         }
-        return visitor;
+        return "审核成功";
     }
 //    @GetMapping("/block")
 //    public visitinfo block(@RequestParam("visitorPhone")String visitorPhone){
@@ -238,18 +264,31 @@ public class VisitinfoControll {
 
 
     @GetMapping("/refuse")//前端拒绝审核访客方法
-    public visitinfo refuse(@RequestParam("visitorPhone")String visitorPhone){
+    public String refuse(
+            @RequestParam("visitorPhone")String visitorPhone,
+            @RequestParam("edit") String edit
+    ){
         // 查找具有特定 visitor_phone 的访客
         visitinfo visitor = v.findByVisitorPhone(visitorPhone);
-        if (visitor != null) {
-            // 修改 applicationStatus 的值为 "拒绝"
-            visitor.setApplicationStatus("拒绝");
-            v.save(visitor);
-            info.infooperate(visitor);
-        } else {
-            return null;
-            // 处理访客未找到的情况，例如抛出异常或其他操作
+        String lockinfo=visitor.getLockinfo();
+        switch (lockinfo) {
+            case "管控":
+                if (check.checkpower(edit).contains("主管")) {
+                    // 修改 applicationStatus 的值为 "拒绝"
+                    visitor.setApplicationStatus("拒绝");
+                    v.save(visitor);
+                    info.infooperate(visitor);
+                } else {
+                    return "权限不足";
+                }
+                break;
+            default:
+                // 修改 applicationStatus 的值为 "拒绝"
+                visitor.setApplicationStatus("拒绝");
+                v.save(visitor);
+                info.infooperate(visitor);
+                break;
         }
-        return visitor;
+        return "拒绝成功";
     }
 }

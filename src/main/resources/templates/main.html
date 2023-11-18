@@ -128,7 +128,7 @@
             <div id="container2">
                 <i class="el-icon-bell"></i>
                 <el-avatar class="el-logo2">头像</el-avatar>
-                <element class="text2">张三</element>
+                <element class="text2">{{ storedUsername }}</element>
 
             </div>
         </el-header>
@@ -229,7 +229,8 @@
             currentLocation:'',
             loading: true,
             flowSrc: '',
-            showReture: false
+            showReture: false,
+            storedUsername:localStorage.getItem('username'),
 
         },
         methods: {

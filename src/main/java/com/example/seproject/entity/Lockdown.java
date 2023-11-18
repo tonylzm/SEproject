@@ -1,12 +1,18 @@
 package com.example.seproject.entity;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
+@Entity
+@Table(name="lockdown")
 public class Lockdown {
+    @Id
     private String place;
     private String reason;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private String start;
+    private String end;
 
     public String getPlace() {
         return place;
@@ -24,19 +30,19 @@ public class Lockdown {
         this.reason = reason;
     }
 
-    public LocalDateTime getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
+    public String getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEnd(String end) {
         this.end = end;
     }
 }

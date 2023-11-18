@@ -13,7 +13,7 @@ public class visitinfo {
     @Id
     private String visitorPhone;
     private String visitorName;
-//UUID
+    private String lockinfo;
     private String UUID;
     private String idcard;
     private Date arrivedate;
@@ -32,6 +32,7 @@ public class visitinfo {
     private String equipment;
     private boolean elsepeople;
     private String elsepeopleinfo;
+
 
     public String getEquipment() {
         return equipment;
@@ -174,5 +175,13 @@ public class visitinfo {
 
     public void setApplicationStatus(String applicationStatus) {
         this.applicationStatus = applicationStatus;
+    }
+
+    public String getLockinfo() {
+        return lockinfo;
+    }
+
+    public void setLockinfo(String lockinfo) {
+        this.lockinfo = lockinfo;
     }
 }
