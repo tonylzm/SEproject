@@ -52,11 +52,10 @@ public class LockService {
 
             if(time3.isAfter(time1)&&time3.isBefore(time2)){
                 visitinfo.setLockinfo("管控");
-            }else {
-                visitinfo.setLockinfo("未管控");
+                return;
             }
-
         }
+        visitinfo.setLockinfo("未管控");
     }
 
 

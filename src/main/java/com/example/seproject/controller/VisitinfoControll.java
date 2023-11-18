@@ -160,7 +160,9 @@ public class VisitinfoControll {
         block blocks = b.findByVisitorPhone(request.getVisitorPhone());
         if(blocks!=null){
             blocks.setBlockreason(request.getBlockreason());
+            blocks.setBlockpeople(request.getBlockpeople());
             b.save(blocks);
+
         }
         else{
             return null;
