@@ -16,6 +16,10 @@ public interface VisitinfoDao extends JpaRepository<visitinfo,Integer> {
     @Modifying
     @Query("UPDATE visitinfo v SET v.UUID = :uuid WHERE v.visitorPhone = :visitPhone")
     void updateUUIDByVisitPhone( String visitPhone,  String uuid);
+    @Modifying
+    @Query("UPDATE visitinfo v SET v.UUID = :uuid, v.applicationStatus = :status WHERE v.visitorPhone = :visitPhone")
+    void updateUUIDAndStatusByVisitPhone(String visitPhone,  String uuid, String status);
+
     //查找arrivedata，arrivetime,lefttime
     @Query("SELECT CONCAT(v.arrivedate,' ', v.arrivetime, ' - ',v.arrivedate, ' ', v.lefttime) FROM visitinfo v WHERE v.visitorPhone = :visitPhone")
     String findTimeByvisitorPhone(String visitPhone);

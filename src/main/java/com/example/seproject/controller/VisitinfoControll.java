@@ -2,7 +2,7 @@
  * 文件名：VisitinfoControll.java
  * 功能描述：访客信息控制类，主要功能是用来存储修改访客信息的API接口方法
  * 作者：tony lzm
- * 创建时间：2020-09-17 10:00
+ * 创建时间：2023-09-17 10:00
  * 修改记录：
  *******************************************************************************/
 
@@ -60,7 +60,7 @@ public class VisitinfoControll {
             else if(status.equals("拉黑")){
                 return "该访客已拉黑";
             }
-            else if(status.equals("拒绝")){
+            else if(status.equals("拒绝") || status.equals("已访问")){
                 v.save(visitInfo);
                 return "添加成功";
             }
