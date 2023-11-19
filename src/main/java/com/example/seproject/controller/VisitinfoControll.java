@@ -49,49 +49,47 @@ public class VisitinfoControll {
 
     @PostMapping("/addinfo")//前端添加访客信息方法,如果有未访问完的访客信息，不允许添加
     public String addInfo(@RequestBody visitinfo visitInfo) {
-        visitinfo visitinfo=v.findByVisitorPhone(visitInfo.getVisitorPhone());
+        visitinfo visitinfo = v.findByVisitorPhone(visitInfo.getVisitorPhone());
         lockService.lockpower(visitInfo);
-        if(visitinfo!=null){
-            String status=visitinfo.getApplicationStatus();
-            if(status==null){
+        if (visitinfo != null) {
+            String status = visitinfo.getApplicationStatus();
+            if (status == null) {
                 v.save(visitInfo);
                 return "该访客未被审核";
-            }
-            else if(status.equals("拉黑")){
+            } else if (status.equals("拉黑")) {
                 return "该访客已拉黑";
-            }
-            else if(status.equals("拒绝") || status.equals("已访问")){
+            } else if (status.equals("拒绝") || status.equals("已访问")) {
                 v.save(visitInfo);
                 return "添加成功";
             }
             return "该访客存在";
-        }else{
+        } else {
             v.save(visitInfo);
             return "添加成功";
         }
     }
 
     @GetMapping("/status")//前端查看访客审核状态方法，返回一个字符串
-    public String status(@RequestParam("visitorPhone")String visitorPhone){
-            visitinfo visitinfo=v.findByVisitorPhone(visitorPhone);
-            if(visitinfo==null){
-                return "不存在";
-            }
-            String status=visitinfo.getApplicationStatus();
-            return status;
+    public String status(@RequestParam("visitorPhone") String visitorPhone) {
+        visitinfo visitinfo = v.findByVisitorPhone(visitorPhone);
+        if (visitinfo == null) {
+            return "不存在";
+        }
+        String status = visitinfo.getApplicationStatus();
+        return status;
     }
 
-//权限判断，明日需重点完善此部分
+    //权限判断，明日需重点完善此部分
     @GetMapping("/power")
-    public String power(@RequestParam("visitorPhone")String visitorPhone){
-        visitinfo visitinfo=v.findByVisitorPhone(visitorPhone);
-        String areas=visitinfo.getVisitAreas();
+    public String power(@RequestParam("visitorPhone") String visitorPhone) {
+        visitinfo visitinfo = v.findByVisitorPhone(visitorPhone);
+        String areas = visitinfo.getVisitAreas();
         //如果仓库字段在访问区域中，返回仓库权限
-        if(areas.contains("仓库")){
+        if (areas.contains("仓库")) {
             return "仓库权限";
         }
         //如果办公区字段在访问区域中，返回办公区权限
-        if(areas.contains("办公大楼")){
+        if (areas.contains("办公大楼")) {
             return "办公区权限";
         }
         return "无权限";
@@ -99,8 +97,8 @@ public class VisitinfoControll {
 
 
     @GetMapping("/allinfo")//前端查看所有访客信息方法，返回一个数组
-    public List allinfo(){
-        List all=v.findAll();
+    public List allinfo() {
+        List all = v.findAll();
         return all;
     }
 
@@ -108,18 +106,38 @@ public class VisitinfoControll {
     public Page<visitinfo> pagesallinfo(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "pageSize", defaultValue = "4") int pageSize,
-            @RequestParam(value = "status") String status)
-           {
+            @RequestParam(value = "status") String status) {
         // 创建分页请求对象
         Pageable pageable = PageRequest.of(page, pageSize);
-               if(Objects.equals(status, "unreviewed")){
-                   Page<visitinfo> allinfo = v.findByApplicationStatusIsNull(pageable);
-                   return allinfo;
-               }else {
-                     Page<visitinfo> allinfo = v.findByApplicationStatusIsNotNull(pageable);
-                     return allinfo;
-               }
+        if (Objects.equals(status, "unreviewed")) {
+            Page<visitinfo> allinfo = v.findByApplicationStatusIsNull(pageable);
+            return allinfo;
+        } else {
+            Page<visitinfo> allinfo = v.findByApplicationStatusIsNotNull(pageable);
+            return allinfo;
+        }
     }
+
+
+    @GetMapping("/visitallinfo")//对数据进行分页
+    public Page<visitinfo> visitallinfo(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", defaultValue = "4") int pageSize,
+            @RequestParam(value = "status") String status) {
+        // 创建分页请求对象
+        Pageable pageable = PageRequest.of(page, pageSize);
+        if (Objects.equals(status, "coming")) {
+            Page<visitinfo> allinfo = v. findByApplicationStatusAndUUIDIsNull("通过",pageable);
+            return allinfo;
+        } else if (Objects.equals(status, "history")) {
+            Page<visitinfo> allinfo = v.findByApplicationStatus("已访问",pageable);
+            return allinfo;
+        } else  {
+            Page<visitinfo> allinfo = v.findByApplicationStatusAndUUIDIsNotNull("通过",pageable);
+            return allinfo;
+        }
+    }
+
 //封控
     @GetMapping("/findinfo")//前端查看特定访客信息方法，返回一个对象
     public visitinfo findinfo(@RequestParam("visitorPhone")String visitorPhone){

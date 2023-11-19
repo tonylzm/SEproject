@@ -33,4 +33,16 @@ public interface VisitinfoDao extends JpaRepository<visitinfo,Integer> {
     // 根据applicationStatus是否为空来查询数据
     Page<visitinfo> findByApplicationStatusIsNull(Pageable pageable);
 
+    // 根据applicationStatus来查询数据
+    Page<visitinfo> findByApplicationStatus(String applicationStatus, Pageable pageable);
+
+    Page<visitinfo> findByApplicationStatusAndUUIDIsNotNull(String applicationStatus, Pageable pageable);
+
+    Page<visitinfo> findByApplicationStatusAndUUIDIsNull(String applicationStatus, Pageable pageable);
+
+
+
+
+
+
 }
