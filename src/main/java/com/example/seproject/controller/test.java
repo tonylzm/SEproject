@@ -49,7 +49,8 @@ public class test {
                 }
                 case "时间范围不在当前时间内，已过期" ->{
                     String uuidStr = "000000000000000000000000";
-                    v.updateUUIDByVisitPhone(visitPhone, uuidStr);
+                    String status = "已访问";
+                    v.updateUUIDAndStatusByVisitPhone(visitPhone, uuidStr, status);
                     q.generateQRCode(uuidStr, response);
                 }
             }

@@ -78,6 +78,85 @@
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: center; align-items: center;">
                             <el-button type="primary" icon="el-icon-check" @click="handleCheck(scope.row.visitorPhone)" size="small">查看</el-button>
+                            <el-dialog :visible.sync="dialogVisible" width="60%" >
+                                <div>
+                                    <div style="display: flex; justify-content: center;">
+                                        <img src="/static/img/portrait.jpeg" style="width: 100px; height: 100px;">
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 25%;">
+                                            <strong>访客姓名：</strong> {{ content.visitorName }}
+                                          </span>
+                                        <span style="display: inline-block; width: 30%;">
+                                            <strong>随行人数：</strong> {{ content.elsepeople }}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>状态：</strong> {{ content.applicationStatus }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 30%;">
+                                            <strong>所属公司：</strong> {{ content.affiliatedUnit}}
+                                          </span>
+                                        <span style="display: inline-block; width: 30%;">
+                                            <strong>物流单号：</strong> {{ content.logisticsnum}}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>运送物品：</strong> {{ content.goods }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 30%;">
+                                            <strong>入园事由 ：</strong> {{ content.visitreason }}
+                                          </span>
+                                        <span style="display: inline-block; width: 45%;">
+                                            <strong>访问区域：</strong> {{ content.visitAreas }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 40%;">
+                                            <strong>联系方式：</strong> {{ content.visitorPhone}}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>车牌号：</strong> {{ content.licensePlate }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 20%;">
+                                            <strong>邀约人：</strong> {{ content.inviter}}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>停靠车位：</strong> {{ content.parkingSpace }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 40%;">
+                                            <strong>证件号：</strong> {{ content.idcard}}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>管控：</strong> {{ content.licensePlate }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 20%;">
+                                            <strong>预计到达时间：</strong> {{ content.arrivedate }} {{ content.arrivetime }}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>访问时长：</strong> <span>{{ content.visitDuration }}</span> h
+                                          </span>
+                                    </div>
+                                    <el-divider></el-divider>
+                                    <div style="display: flex; justify-content: center;">
+                                        <el-button class="cancel-button" @click="dialogVisible = false">取消</el-button>
+                                    </div>
+
+                                </div>
+                            </el-dialog>
+
+
+
+
+
                         </div>
                     </template>
                 </el-table-column>
@@ -104,6 +183,81 @@
                         <template slot-scope="scope">
                             <div style="display: flex; justify-content: center; align-items: center;">
                                 <el-button type="primary" icon="el-icon-check" @click="handleCheck(scope.row.visitorPhone)" size="small">查看</el-button>
+                                <el-dialog :visible.sync="dialogVisible" width="60%" >
+                                    <div>
+                                        <div style="display: flex; justify-content: center;">
+                                            <img src="/static/img/portrait.jpeg" style="width: 100px; height: 100px;">
+                                        </div>
+                                        <div>
+                                          <span style="display: inline-block; width: 25%;">
+                                            <strong>访客姓名：</strong> {{ content.visitorName }}
+                                          </span>
+                                            <span style="display: inline-block; width: 30%;">
+                                            <strong>随行人数：</strong> {{ content.elsepeople }}
+                                          </span>
+                                            <span style="display: inline-block; width: 20%;">
+                                            <strong>状态：</strong> {{ content.applicationStatus }}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <span style="display: inline-block; width: 30%;">
+                                            <strong>所属公司：</strong> {{ content.affiliatedUnit}}
+                                          </span>
+                                            <span style="display: inline-block; width: 30%;">
+                                            <strong>物流单号：</strong> {{ content.logisticsnum}}
+                                          </span>
+                                            <span style="display: inline-block; width: 20%;">
+                                            <strong>运送物品：</strong> {{ content.goods }}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <span style="display: inline-block; width: 30%;">
+                                            <strong>入园事由 ：</strong> {{ content.visitreason }}
+                                          </span>
+                                            <span style="display: inline-block; width: 45%;">
+                                            <strong>访问区域：</strong> {{ content.visitAreas }}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <span style="display: inline-block; width: 40%;">
+                                            <strong>联系方式：</strong> {{ content.visitorPhone}}
+                                          </span>
+                                            <span style="display: inline-block; width: 20%;">
+                                            <strong>车牌号：</strong> {{ content.licensePlate }}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <span style="display: inline-block; width: 20%;">
+                                            <strong>邀约人：</strong> {{ content.inviter}}
+                                          </span>
+                                            <span style="display: inline-block; width: 20%;">
+                                            <strong>停靠车位：</strong> {{ content.parkingSpace }}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <span style="display: inline-block; width: 40%;">
+                                            <strong>证件号：</strong> {{ content.idcard}}
+                                          </span>
+                                            <span style="display: inline-block; width: 20%;">
+                                            <strong>管控：</strong> {{ content.licensePlate }}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <span style="display: inline-block; width: 20%;">
+                                            <strong>预计到达时间：</strong> {{ content.arrivedate }} {{ content.arrivetime }}
+                                          </span>
+                                            <span style="display: inline-block; width: 20%;">
+                                            <strong>访问时长：</strong> <span>{{ content.visitDuration }}</span> h
+                                          </span>
+                                        </div>
+                                        <el-divider></el-divider>
+                                        <div style="display: flex; justify-content: center;">
+                                            <el-button class="cancel-button" @click="dialogVisible = false">取消</el-button>
+                                        </div>
+
+                                    </div>
+                                </el-dialog>
+
                             </div>
                         </template>
                     </el-table-column>
@@ -129,8 +283,82 @@
                 <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="150" >
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="danger" icon="el-icon-close" @click="handleCheck1(scope.row.visitorPhone)" size="small">查看</el-button>
-                            <el-button type="primary" icon="el-icon-check" @click="handleMove(scope.row.visitorPhone)" size="small">删除</el-button>
+                            <el-button type="danger" icon="el-icon-close" @click="handleCheck(scope.row.visitorPhone)" size="small">查看</el-button>
+                            <el-dialog :visible.sync="dialogVisible" width="60%" >
+                                <div>
+                                    <div style="display: flex; justify-content: center;">
+                                        <img src="/static/img/portrait.jpeg" style="width: 100px; height: 100px;">
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 25%;">
+                                            <strong>访客姓名：</strong> {{ content.visitorName }}
+                                          </span>
+                                        <span style="display: inline-block; width: 30%;">
+                                            <strong>随行人数：</strong> {{ content.elsepeople }}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>状态：</strong> {{ content.applicationStatus }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 30%;">
+                                            <strong>所属公司：</strong> {{ content.affiliatedUnit}}
+                                          </span>
+                                        <span style="display: inline-block; width: 30%;">
+                                            <strong>物流单号：</strong> {{ content.logisticsnum}}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>运送物品：</strong> {{ content.goods }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 30%;">
+                                            <strong>入园事由 ：</strong> {{ content.visitreason }}
+                                          </span>
+                                        <span style="display: inline-block; width: 45%;">
+                                            <strong>访问区域：</strong> {{ content.visitAreas }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 40%;">
+                                            <strong>联系方式：</strong> {{ content.visitorPhone}}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>车牌号：</strong> {{ content.licensePlate }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 20%;">
+                                            <strong>邀约人：</strong> {{ content.inviter}}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>停靠车位：</strong> {{ content.parkingSpace }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 40%;">
+                                            <strong>证件号：</strong> {{ content.idcard}}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>管控：</strong> {{ content.licensePlate }}
+                                          </span>
+                                    </div>
+                                    <div>
+                                          <span style="display: inline-block; width: 20%;">
+                                            <strong>预计到达时间：</strong> {{ content.arrivedate }} {{ content.arrivetime }}
+                                          </span>
+                                        <span style="display: inline-block; width: 20%;">
+                                            <strong>访问时长：</strong> <span>{{ content.visitDuration }}</span> h
+                                          </span>
+                                    </div>
+                                    <el-divider></el-divider>
+                                    <div style="display: flex; justify-content: center;">
+                                        <el-button class="cancel-button" @click="dialogVisible = false">取消</el-button>
+                                    </div>
+
+                                </div>
+                            </el-dialog>
+                            <el-button type="primary" icon="el-icon-check" @click="handleDelete(scope.row.visitorPhone)" size="small">删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -158,8 +386,40 @@
                 showTable1:false ,
                 showTable2:false,
 
-                content:"",
-                content1:"",
+                content: {
+                    visitorName: '',
+                    affiliatedUnit: '',
+                    accessDetails: '',
+                    visitreason: '',
+                    visitorPhone: '',
+                    inviter: '',
+                    logisticsnum: '',
+                    visitAreas: '',
+                    licensePlate: '',
+                    parkingSpace: '',
+                    blacklist: '',
+                    idcard:'',
+                    arrivetime:'',
+                    lefttime:'',
+                    elsepeople:'',
+                    goods:'',
+                    visitDuration:'',
+                    areasToUpdate: {
+                        warehouse: false,
+                        dock: false,
+                        officeBuilding: false,
+                        labControlled: false,
+                        researchCenter: false,
+                        productionArea: false,
+                    },},
+                content1:{
+                    visitorName: '',
+                    affiliatedUnit: '',
+                    blockreason:'',
+                    blocktime:'',
+                    blockpeople:'',
+
+                },
                 dialogVisible:false,
                 dialogVisible1:false,
                 pagin:false,
@@ -195,6 +455,13 @@
             {
                 this.showTable = true;
                 this.showTable1 = true;
+            },
+            handleDelete(visitorPhone) {
+                //删除历史记录方法
+                const index = this.tableData.findIndex(data => data.visitorPhone === visitorPhone); // 找到visitorPhone匹配的数据的索引
+                if (index !== -1) {
+                    this.tableData.splice(index, 1); // 从数组中删除该元素
+                }
             },
             handleCheck1(visitorPhone){
                 //黑名单中查看方法
@@ -235,7 +502,43 @@
                     }
                 })
                     .then(response => {
-                        this.content = response.data;
+                        this.content.visitorName = response.data.visitorName;
+                        this.content.affiliatedUnit = response.data.affiliatedUnit;
+                        this.content.visitreason =response.data.visitreason;
+                        this.content.licensePlate=response.data.licensePlate;
+                        this.content.accessDetails=response.data.accessDetails;
+                        this.content.visitorPhone=response.data.visitorPhone;
+                        this.content.inviter=response.data.inviter;
+                        this.content. logisticsnum=response.data. logisticsnum;
+                        this.content. parkingSpace=response.data. parkingSpace;
+                        this.content. blacklist=response.data. blacklist;
+                        this.content. visitAreas=response.data. visitAreas;
+                        this.content.elsepeople=response.data.elsepeople;
+                        this.content.goods=response.data.goods;
+                        this.content.idcard=response.data.idcard;
+                        // 获得 arriverTime 和 leftTime
+                        const arriveTime = response.data.arrivetime;
+                        const leftTime = response.data.lefttime;
+
+                        // 计算访问时长
+                        const arrive = arriveTime.split(':');
+                        const left = leftTime.split(':');
+
+                        const arriveMinutes = parseInt(arrive[0]) * 60 + parseInt(arrive[1]);
+                        const leftMinutes = parseInt(left[0]) * 60 + parseInt(left[1]);
+
+                        let visitDuration = (leftMinutes - arriveMinutes) / 60;
+
+                        if (visitDuration % 1 === 0) {
+                            visitDuration = visitDuration.toFixed(0);
+                        } else {
+                            visitDuration = visitDuration.toFixed(2);
+                        }
+
+                        // 将访问时长设置到 content 对象中
+                        this.content.visitDuration = visitDuration;
+
+
                     })
                     .catch(error => {
                         console.error(error);
@@ -338,6 +641,7 @@
                     this.getTableData(this.tabname,1);
 
                 } else if (tab.name === 'history') {
+                    this.tabname=tab.name;
                     this.showTable0 = true;
                     this.showTable = false;
                     this.showTable1 = false;
@@ -345,7 +649,7 @@
                     this.pagin=false;
                     this.pagin2=false;
                     this.pagin1=true;
-                    this. getBlockTableData(1);
+                    this.getTableData(this.tabname,1);
 
                 }
             },
@@ -354,14 +658,14 @@
                 this.getTableData(this.tabname,page);
             },
             handlePageChange1(page) {
-                this. getBlockTableData(page);
+                this. getTableData(this.tabname,page);
             },
             handlePageChange2(page) {
                 this.getTableData(this.tabname,page);
             },
             getTableData(tabname,page) {
                 axios
-                    .get('/pagesallinfo', {
+                    .get('/visitallinfo', {
                         params: {
                             page: page - 1,
                             pageSize: this.pageSize,
@@ -373,9 +677,12 @@
                         if(tabname==='coming') {
                             this.tableData = tableData;
                         }
-                        else if(tabname==='accessing') {
+                        else if(tabname==='history') {
+                            this.tableData2 = tableData;
+                        }else if(tabname==='accessing'){
                             this.tableData1 = tableData;
                         }
+
                         this.total = response.data.totalElements;
                     })
                     .catch(error => {

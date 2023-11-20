@@ -44,6 +44,11 @@ public class LockService {
             Lockdown lock=l.findByPlace(place);
             String start=lock.getStart();
             String end=lock.getEnd();
+            if (start == null || end == null) {
+                visitinfo.setLockinfo("未管控");
+                return;
+            }
+
             String now=visitinfo.getArrivedate()+" "+visitinfo.getArrivetime();
 
             LocalDateTime time1 = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));

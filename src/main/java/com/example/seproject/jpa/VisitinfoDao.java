@@ -16,6 +16,10 @@ public interface VisitinfoDao extends JpaRepository<visitinfo,Integer> {
     @Modifying
     @Query("UPDATE visitinfo v SET v.UUID = :uuid WHERE v.visitorPhone = :visitPhone")
     void updateUUIDByVisitPhone( String visitPhone,  String uuid);
+    @Modifying
+    @Query("UPDATE visitinfo v SET v.UUID = :uuid, v.applicationStatus = :status WHERE v.visitorPhone = :visitPhone")
+    void updateUUIDAndStatusByVisitPhone(String visitPhone,  String uuid, String status);
+
     //查找arrivedata，arrivetime,lefttime
     @Query("SELECT CONCAT(v.arrivedate,' ', v.arrivetime, ' - ',v.arrivedate, ' ', v.lefttime) FROM visitinfo v WHERE v.visitorPhone = :visitPhone")
     String findTimeByvisitorPhone(String visitPhone);
@@ -28,5 +32,17 @@ public interface VisitinfoDao extends JpaRepository<visitinfo,Integer> {
 
     // 根据applicationStatus是否为空来查询数据
     Page<visitinfo> findByApplicationStatusIsNull(Pageable pageable);
+
+    // 根据applicationStatus来查询数据
+    Page<visitinfo> findByApplicationStatus(String applicationStatus, Pageable pageable);
+
+    Page<visitinfo> findByApplicationStatusAndUUIDIsNotNull(String applicationStatus, Pageable pageable);
+
+    Page<visitinfo> findByApplicationStatusAndUUIDIsNull(String applicationStatus, Pageable pageable);
+
+
+
+
+
 
 }
