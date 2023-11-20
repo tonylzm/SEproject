@@ -222,7 +222,9 @@ public class VisitinfoControll {
         if (visitor != null) {
             switch (lockinfo){
                 case "管控":
-                    if (check.checkpower(edit).contains("主管")) {
+                    if(check.checkpower(edit)==null){
+                        return "权限不足";
+                    } else if (check.checkpower(edit).contains("主管")) {
                         visitor.setApplicationStatus("通过");
                         v.save(visitor);
                         info.infooperate(visitor);
@@ -293,7 +295,9 @@ public class VisitinfoControll {
         String lockinfo=visitor.getLockinfo();
         switch (lockinfo) {
             case "管控":
-                if (check.checkpower(edit).contains("主管")) {
+                if(check.checkpower(edit)==null) {
+                    return "权限不足";
+                } else if (check.checkpower(edit).contains("主管")) {
                     // 修改 applicationStatus 的值为 "拒绝"
                     visitor.setApplicationStatus("拒绝");
                     v.save(visitor);
