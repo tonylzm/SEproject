@@ -1,0 +1,516 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org" lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Vue.js Example</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        el-header {
+            background-color: #B3C0D1;
+            color: #333;
+            line-height: 500px;
+            /*height: 100%;*/
+        }
+
+        el-aside {
+            color: #333;
+        }
+
+        el-table-column {
+            text-align: center;
+        }
+        center-label {
+            text-align: center;
+        }
+        label{
+            font-size: 15px;
+        }
+        .float-div{
+            float: left;
+            margin-right: 20px;
+        }
+        .float-div2{
+            float: left;
+            margin-left: 100px;
+        }
+
+
+    </style>
+</head>
+<body>
+
+
+<div id="app">
+
+
+    <el-header style="text-align: right; font-size: 10px;">
+        <el-tabs v-model="tabledata" type="border-card" @tab-click="handleTabClick">
+            <el-tab-pane label="员工管理" name="manage" ></el-tab-pane>
+            <el-tab-pane label="管控" name="control"></el-tab-pane>
+
+            <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
+            <el-main v-if="showTable0" style="text-align: left;">
+                <div class="float-div">
+                    <h3>输入查询：</h3>
+                    <el-input
+                            placeholder="姓名/账号/手机/微信"
+                            v-model="employee.information"
+                            style="width: 200px">
+                    </el-input>
+                </div>
+                <div class="float-div">
+                    <h3>员工职务：</h3>
+                    <el-input
+                            placeholder="全部"
+                            v-model="employee.post"
+                            style="width: 200px">
+                    </el-input>
+                </div>
+                <div class="float-div">
+                    <h3>所属部门：</h3>
+                    <el-input
+                            placeholder="全部"
+                            v-model="employee.affiliation"
+                            style="width: 200px">
+                    </el-input>
+                </div>
+                <br/>
+                <br/>
+                <el-button type="primary">查询</el-button>
+                <el-button >重置</el-button>
+                <el-button type="primary"@click="dialogVisible1 = true">添加</el-button>
+                <el-dialog title="增添新员工" :visible.sync="dialogVisible1" :before-close="handleClose">
+                    <div class="float-div">
+                        <h3>工号：</h3>
+                        <el-input
+                                placeholder="请填写工号"
+                                v-model="employee.account"
+                                style="width: 200px">
+                        </el-input>
+                    </div>
+                    <div class="float-div">
+                        <h3>员工姓名：</h3>
+                        <el-input
+                                placeholder="请填写员工姓名"
+                                v-model="employee.name"
+                                style="width: 200px">
+                        </el-input>
+                    </div>
+                    <div style="clear: both;" class="float-div">
+                        <h3>员工性别：</h3>
+                        <el-input
+                                placeholder="请填写员工性别"
+                                v-model="employee.gender"
+                                style="width: 200px">
+                        </el-input>
+                    </div>
+                    <div class="float-div">
+                        <h3>所属部门：</h3>
+                        <el-select v-model="employee.department"
+                                   placeholder="请选择当前职务"
+                                   style="width: 200px">
+                            <el-option
+                                    v-for="item in options1"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div style="clear: both;" >
+                        <h3>当前职务</h3>
+                        <el-select v-model="employee.post"
+                                   placeholder="请选择当前职务"
+                                   style="width: 200px">
+                            <el-option
+                                    v-for="item in options2"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="dialogVisible1 = false">取 消</el-button>
+                        <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
+                    </span>
+                </el-dialog>
+            </el-main>
+
+            <el-table  v-if="showTable1" :data="tableData1" :columns="tableColumns">
+                <el-table-column prop="employeeName" label="员工姓名" width="100">
+                </el-table-column>
+                <el-table-column prop="Gender" label="性别" width="60">
+                </el-table-column>
+                <el-table-column prop="Department" label="所属部门" width="100">
+                </el-table-column>
+                <el-table-column prop="Posts" label="当前职务" width="100">
+                </el-table-column>
+                <el-table-column prop="Account" label="工号" width="160">
+                </el-table-column>
+                <el-table-column prop="Phone" label="手机" width="160">
+                </el-table-column>
+                <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="250" >
+                    <template slot-scope="scope">
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <el-button type="primary"  @click="handleCheck1(scope.row.visitorPhone)" size="small">编辑</el-button>
+                            <el-button type="info"  @click="dialogVisible = true" size="small">权限</el-button>
+                                <el-dialog title="权限设置" :visible.sync="dialogVisible" :before-close="handleClose">
+                                    <h3>主权限设置：</h3>
+                                    <el-checkbox v-model="permissions.checked1">系统管理员</el-checkbox>
+                                    <el-checkbox v-model="permissions.checked2">主管</el-checkbox>
+                                    <h3>副权限设置：</h3>
+                                    <el-checkbox v-model="permissions.checked3">办公楼</el-checkbox>
+                                    <el-checkbox v-model="permissions.checked4">仓库</el-checkbox>
+                                    <el-checkbox v-model="permissions.checked5">门岗</el-checkbox>
+                                    <el-checkbox v-model="permissions.checked6">码头</el-checkbox>
+                                    <el-checkbox v-model="permissions.checked7">实验室</el-checkbox>
+                                    <el-checkbox v-model="permissions.checked8">研发部</el-checkbox>
+                                    <span slot="footer" class="dialog-footer">
+                                        <el-button @click="dialogVisible = false">取 消</el-button>
+                                        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                                    </span>
+                                </el-dialog>
+                            <el-button type="danger"  @click="handleMove(scope.row.visitorPhone)" size="small">删除</el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <el-main v-if="showTable" style="text-align: left;">
+                <div class="float-div">
+                    <h2>设置管控时间段</h2>
+                    <div class="float-div">
+                        <h3>开始时间</h3>
+                        <el-input type="datetime-local"
+                                  v-model="visitor.startTime"
+                                  style="width: 100px">
+                        </el-input>
+                    </div>
+                    <div class="float-div">
+                        <h3>结束时间</h3>
+                        <el-input type="datetime-local"
+                                  v-model="visitor.endTime"
+                                  style="width: 100px">
+                        </el-input>
+                    </div>
+                </div>
+
+                <div style="clear: both;" class="float-div">
+                    <h2>设置管控地点</h2>
+                    <el-checkbox v-model="control.place1">仓库</el-checkbox>
+                    <el-checkbox v-model="control.place2">办公大楼</el-checkbox>
+                </div>
+                <div style="clear: both;" class="float-div">
+                    <h2>设置管控事件</h2>
+                    <el-checkbox v-model="control.event1">参观（政府工作人员）</el-checkbox>
+                    <el-checkbox v-model="control.event2">参观（供应商）</el-checkbox>
+                    <el-checkbox v-model="control.event3">参观（家属）</el-checkbox>
+                    <el-checkbox v-model="control.event4">施工</el-checkbox>
+                    <el-checkbox v-model="control.event5">物流</el-checkbox>
+                    <br/>
+                    <el-checkbox v-model="control.event6">其他</el-checkbox>
+                    <br/>
+                    <br/>
+                    <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder="请输入内容"
+                            v-model="control.event7">
+                    </el-input>
+                </div>
+                <br/>
+                <div style="clear: both;" class="float-div2">
+                    <br/>
+                    <el-button type="primary"
+                               style="display:block;
+                               margin:0 auto"
+                               round>添加</el-button>
+                </div>
+
+
+            </el-main>
+        </el-tabs>
+        <el-pagination v-if="pagin1"  @current-change="handlePageChange1" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
+
+    </el-header>
+
+
+</div>
+
+
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                tabname:'',
+                showTable1:true ,
+                showTable0:true,
+                content:"",
+                content1:"",
+                dialogVisible:false,
+                dialogVisible1:false,
+                pagin1:false,
+
+
+                tableData1:[],
+
+                //分页数据
+                pageSize: 4, // 每页显示的条数
+                total:0,
+
+                visitor: {
+                    name: '',
+                    phone: '',
+                    affiliation:'',
+                    startTime: '',
+                    endTime: '',
+                    test:'',
+                },
+                inviter: {
+                    reason: '',
+                },
+                employee:{
+                    information:'',
+                    affiliation: '',
+                    post:'',
+                    name:'',
+                    gender:'',
+                    account:'',
+                    department:'',
+
+
+                },
+                permissions:{
+                    checked1:false,
+                    checked2:false,
+                    checked3:false,
+                    checked4:false,
+                    checked5:false,
+                    checked6:false,
+                    checked7:false,
+                    checked8:false,
+                    event1:false,
+                    event2:false,
+                    event3:false,
+                    event4:false,
+                    event5:false,
+                    event6:false,
+                    event7:'',
+                },
+                control:{
+                    place1:false,
+                    place2:false,
+                },
+                //选项
+                options1: [{
+                    value: '选项1',
+                    label: '人事部'
+                }, {
+                    value: '选项2',
+                    label: '行政部'
+                }, {
+                    value: '选项2',
+                    label: '市场部'
+                    },
+                ],
+                options2: [{
+                    value: '选项1',
+                    label: '部门经理'
+                }, {
+                    value: '选项2',
+                    label: '部门员工'
+                },
+                ],
+
+            }
+        },
+        methods: {
+            handleUnreviewedClick: function ()
+            {
+                this.showTable = true;
+                this.showTable1 = true;
+                this.showTable0 = true;
+            },
+            handleCheck1(visitorPhone){
+                //黑名单中查看方法
+                this.dialogVisible1 = true;
+                axios.get('/blockinfo', {
+                    params: {
+                        visitorPhone: visitorPhone
+                    }
+                })
+                    .then(response => {
+                        this.content1 = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
+            handleMove(visitorPhone) {
+                //黑名单移除方法
+                axios.get('/removeblock', {
+                    params: {
+                        visitorPhone: visitorPhone
+                    }
+                })
+                    .then(response => {
+                        this.content = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
+            handleCheck(visitorPhone) {
+                //查看访客操作
+                this.dialogVisible = true;
+                // console.log(dialogVisible)
+                axios.get('/findinfo', {
+                    params: {
+                        visitorPhone: visitorPhone
+                    }
+                })
+                    .then(response => {
+                        this.content = response.data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
+            handleReviewedClick() {
+                // 处理已审核记录标签页点击事件
+                console.log('已审核记录标签页被点击了');
+            },
+
+            handleApprove(visitorPhone) {
+                // console.log('批准点击，访客电话:', visitorPhone);
+
+                // 在这里可以使用点击行的数据，例如将其发送到API，更新Vuex存储等
+
+                axios.get('/vet', {
+
+                    params: {
+                        visitorPhone:visitorPhone
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
+            handleReject(visitorPhone) {
+                // 拒绝操作的逻辑
+                axios.get('/refuse', {
+
+                    params: {
+                        visitorPhone:visitorPhone
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
+            handleDelay(row) {
+                // 延期操作的逻辑
+            },
+            handleBlacklist(row) {
+                function getCurrentFormattedTime() {
+                    const currentDate = new Date();
+                    const year = currentDate.getFullYear();
+                    const month = currentDate.getMonth() + 1;
+                    const day = currentDate.getDate();
+                    const hours = currentDate.getHours();
+                    const minutes = currentDate.getMinutes();
+                    const seconds = currentDate.getSeconds();
+
+                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                }
+                const blocktime = getCurrentFormattedTime();
+
+            },
+            handleTabClick(tab,event) {
+                console.log(tab, event);//xx
+                if (tab.name === 'manage') {
+                    this.tabname=tab.name;
+                    this.showTable0 = true;
+                    this.showTable = false;
+                    this.showTable1 = true;
+                    this.pagin1=true;
+                    this.getTableData(this.tabname,1);
+
+                } else if (tab.name === 'control') {
+                    this.tabname=tab.name;
+                    this.showTable = true;
+                    this.showTable1 = false;
+                    this.showTable0 = false;
+                    this.pagin1=false;
+                    this.getTableData(this.tabname,1);
+
+                }
+            },
+            //后端获取数据
+            handlePageChange(page) {
+                this.getTableData(this.tabname,page);
+            },
+            handlePageChange1(page) {
+                this. getBlockTableData(page);
+            },
+            handlePageChange2(page) {
+                this.getTableData(this.tabname,page);
+            },
+            getTableData(tabname,page) {
+                axios
+                    .get('/pagesallinfo', {
+                        params: {
+                            page: page - 1,
+                            pageSize: this.pageSize,
+                            status:tabname,
+                        }
+                    })
+                    .then(response => {
+                        var tableData = response.data.content;
+                        if(tabname==='control') {
+                            this.tableData = tableData;
+                        }
+                        else if(tabname==='manage') {
+                            this.tableData1 = tableData;
+                        }
+                        this.total = response.data.totalElements;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            created() {
+                this.getTableData();
+            },
+            //编辑窗口关闭按钮
+
+            handleClose(done){
+                this.$confirm('确定关闭吗').then(() => {
+                    // function(done)，done 用于关闭 Dialog
+                    done();
+
+                    console.info("点击右上角 'X' ，取消按钮或遮罩层时触发");
+                }).catch(() => {
+
+                    console.log("点击确定时触发");
+                });
+
+
+        }}
+
+    });
+
+</script>
+</html>

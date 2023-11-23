@@ -159,35 +159,33 @@
                                     <span>内部管理</span>
                                 </template>
                                 <el-menu-item-group>
-                                    <el-menu-item index="2-1">内部管控</el-menu-item>
+                                    <el-menu-item index="2-1"@click="changeIframeSrc5">内部管控</el-menu-item>
                                     <el-menu-item index="2-2">内部人员位置</el-menu-item>
-                                    <el-menu-item index="2-3">车辆管理</el-menu-item>
-                                    <el-menu-item index="2-4">仓库管理</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
+
+<!--                            <el-submenu index="3">-->
+<!--                                <template slot="title">-->
+<!--                                    <i class="el-icon-menu"></i>-->
+<!--                                    <span>设备管理</span>-->
+<!--                                </template>-->
+<!--                                <el-menu-item-group>-->
+<!--                                    <el-menu-item index="3-1">车辆道闸</el-menu-item>-->
+<!--                                    <el-menu-item index="3-2">访客机</el-menu-item>-->
+<!--                                    <el-menu-item index="3-3">摄像头</el-menu-item>-->
+<!--                                </el-menu-item-group>-->
+<!--                            </el-submenu>-->
 
                             <el-submenu index="3">
-                                <template slot="title">
-                                    <i class="el-icon-menu"></i>
-                                    <span>设备管理</span>
-                                </template>
-                                <el-menu-item-group>
-                                    <el-menu-item index="3-1">车辆道闸</el-menu-item>
-                                    <el-menu-item index="3-2">访客机</el-menu-item>
-                                    <el-menu-item index="3-3">摄像头</el-menu-item>
-                                </el-menu-item-group>
-                            </el-submenu>
-
-                            <el-submenu index="4">
                                 <template slot="title">
                                     <i class="el-icon-menu"></i>
                                     <span>系统管理</span>
                                 </template>
                                 <el-menu-item-group>
-                                    <el-menu-item index="4-1">系统日志</el-menu-item>
-                                    <el-menu-item index="4-2">系统维护</el-menu-item>
-                                    <el-menu-item index="4-3">系统配置</el-menu-item>
-                                    <el-menu-item index="4-4">信息管理</el-menu-item>
+<!--                                    <el-menu-item index="4-1">系统日志</el-menu-item>-->
+<!--                                    <el-menu-item index="4-2">系统维护</el-menu-item>-->
+<!--                                    <el-menu-item index="4-3">系统配置</el-menu-item>-->
+                                    <el-menu-item index="3-1" @click="changeIframeSrc6">信息管理</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
 
@@ -252,6 +250,14 @@
             changeIframeSrc4: function() {
                 var iframe = document.querySelector("iframe");
                 iframe.src = "/static/MessageP.html";
+            },
+            changeIframeSrc5: function() {
+                var iframe = document.querySelector("iframe");
+                iframe.src = "/static/InternalC.html";
+            },
+            changeIframeSrc6: function() {
+                var iframe = document.querySelector("iframe");
+                iframe.src = "/static/MessageM.html";
             },
             //解决iframe框架不能及时刷新的问题
             handleIframe(e) {
