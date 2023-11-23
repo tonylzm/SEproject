@@ -8,6 +8,7 @@
 
 package com.example.seproject.controller;
 
+import com.example.seproject.config.VisitinfoSpecification;
 import com.example.seproject.entity.History;
 import com.example.seproject.entity.User;
 import com.example.seproject.entity.block;
@@ -315,4 +316,15 @@ public class VisitinfoControll {
         }
         return "拒绝成功";
     }
+
+    @PostMapping("/search")
+    public List<visitinfo> search(@RequestBody visitinfo filter, @RequestParam(value = "page", defaultValue = "0") int page,
+                                  @RequestParam(value = "pageSize", defaultValue = "8") int pageSize) {
+        Pageable pageable = PageRequest.of(page, 4);
+        VisitinfoSpecification spec = new VisitinfoSpecification(filter);
+        return v.findAll(spec,pageable);
+    }
 }
+
+
+

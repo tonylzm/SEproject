@@ -3,6 +3,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import com.example.seproject.entity.visitinfo;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -39,6 +40,8 @@ public interface VisitinfoDao extends JpaRepository<visitinfo,Integer> {
     Page<visitinfo> findByApplicationStatusAndUUIDIsNotNull(String applicationStatus, Pageable pageable);
 
     Page<visitinfo> findByApplicationStatusAndUUIDIsNull(String applicationStatus, Pageable pageable);
+    List<visitinfo> findAll(Specification<visitinfo> spec, Pageable pageable);
+
 
 
 
