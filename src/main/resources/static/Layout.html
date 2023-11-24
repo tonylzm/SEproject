@@ -63,7 +63,7 @@
                     至
                     <input type="datetime-local" v-model="visitor.endTime" />
                 </label><br/>
-                <button>搜索</button>
+                <button @click="searchVisitors">搜索</button>
             </el-main>
             <el-main v-if="showTable3" style="text-align: left; ">
                 <label>姓名：<input v-model="visitor.name" /></label>
@@ -367,6 +367,33 @@
             }
         },
         methods: {
+            searchVisitors() {
+                // 构建请求数据
+                const filter = {
+                    visitorName: this.visitor.name,
+                    visitorPhone: this.visitor.phone,
+                    visitreason: this.visitor.reason,
+                    visitAreas: this.visitor.department,
+                    // inviter: this.visitor.inviter,
+                    // startTime: this.visitor.startTime,
+                    // endTime: this.visitor.endTime
+                };
+                const page = 0; // 可选，根据你的需求设置
+                const pageSize = 8; // 可选，根据你的需求设置
+
+                // 发送 POST 请求
+                axios.post('/search?page=' + page + '&pageSize=' + pageSize, filter)
+                    .then(response => {
+                        // 请求成功的处理
+                        console.log(response.data);
+                        this.tableData = response.data;
+                    })
+                    .catch(error => {
+                        // 请求失败的处理
+                        console.error(error);
+                    });
+            },
+
             showReasonDialog(visitorPhone) {
                 // 将 newReason 的内容发送给后端更新 blockreason
                 this.dialogVisible1 = false;

@@ -320,9 +320,10 @@ public class VisitinfoControll {
     @PostMapping("/search")
     public List<visitinfo> search(@RequestBody visitinfo filter, @RequestParam(value = "page", defaultValue = "0") int page,
                                   @RequestParam(value = "pageSize", defaultValue = "8") int pageSize) {
-        Pageable pageable = PageRequest.of(page, 4);
+        Pageable pageable = PageRequest.of(page, pageSize);
         VisitinfoSpecification spec = new VisitinfoSpecification(filter);
         return v.findAll(spec,pageable);
+
     }
 }
 
