@@ -184,4 +184,12 @@ public class visitinfo {
     public void setLockinfo(String lockinfo) {
         this.lockinfo = lockinfo;
     }
+
+    public boolean isApplicationStatusIsNull() {
+        return applicationStatus == null;
+    }
+
+    public boolean isApplicationStatusIsNotNull() {
+        return applicationStatus != null;
+    }
 }

@@ -40,7 +40,7 @@ public interface VisitinfoDao extends JpaRepository<visitinfo,Integer> {
     Page<visitinfo> findByApplicationStatusAndUUIDIsNotNull(String applicationStatus, Pageable pageable);
 
     Page<visitinfo> findByApplicationStatusAndUUIDIsNull(String applicationStatus, Pageable pageable);
-    List<visitinfo> findAll(Specification<visitinfo> spec, Pageable pageable);
+    Page<visitinfo> findAll(Specification<visitinfo> spec, Pageable pageable);
 
 
 

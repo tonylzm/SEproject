@@ -181,7 +181,6 @@ public class VisitinfoControll {
             blocks.setBlockreason(request.getBlockreason());
             blocks.setBlockpeople(request.getBlockpeople());
             b.save(blocks);
-
         }
         else{
             return null;
@@ -318,13 +317,17 @@ public class VisitinfoControll {
     }
 
     @PostMapping("/search")
-    public List<visitinfo> search(@RequestBody visitinfo filter,
+    public Page<visitinfo> search(@RequestBody visitinfo filter,
                                   @RequestParam(value = "page", defaultValue = "0") int page,
-                                  @RequestParam(value = "pageSize", defaultValue = "8") int pageSize) {
+                                  @RequestParam(value = "pageSize", defaultValue = "8") int pageSize,
+                                  @RequestParam(value = "tabname") String tabname) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        VisitinfoSpecification spec = new VisitinfoSpecification(filter);
-        return v.findAll(spec,pageable);
-
+        VisitinfoSpecification spec = new VisitinfoSpecification(filter,tabname);
+        return switch (tabname) {
+            case "unreviewed" -> v.findAll(spec, pageable);
+            case "reviewed" -> v.findAll(spec, pageable);
+            default -> null;
+        };
     }
 }
 

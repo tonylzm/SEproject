@@ -12,9 +12,11 @@ import java.util.List;
 
 public class VisitinfoSpecification implements Specification<visitinfo> {
     private final visitinfo filter;
+    private final String tabname;
 
-    public VisitinfoSpecification(visitinfo filter) {
+    public VisitinfoSpecification(visitinfo filter, String tabname) {
         this.filter = filter;
+        this.tabname = tabname;
     }
 
     @Override
@@ -33,6 +35,22 @@ public class VisitinfoSpecification implements Specification<visitinfo> {
         if (filter.getVisitAreas() != null) {
             predicates.add(cb.like(root.get("visitAreas"), "%" + filter.getVisitAreas() + "%"));
         }
+        if (filter.getArrivedate() != null) {
+            // 假设 filter.getArrivedate() 返回的是 java.util.Date 对象
+            predicates.add(cb.equal(root.get("arrivedate"), filter.getArrivedate()));
+        }
+        if (filter.getArrivetime() != null) {
+            predicates.add(cb.like(root.get("arrivetime"), "%" + filter.getArrivetime() + "%"));
+        }
+        if (filter.getLefttime() != null) {
+            predicates.add(cb.like(root.get("lefttime"), "%" + filter.getLefttime() + "%"));
+        }
+        if ("unreviewed".equals(tabname) && filter.isApplicationStatusIsNull()) {
+            predicates.add(cb.isNull(root.get("applicationStatus")));
+        } else if ("reviewed".equals(tabname) && (filter.isApplicationStatusIsNull() || filter.getApplicationStatus() == null)) {
+            predicates.add(cb.isNotNull(root.get("applicationStatus")));
+        }
+
         return cb.and(predicates.toArray(new Predicate[0]));
     }
 }

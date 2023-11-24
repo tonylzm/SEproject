@@ -57,13 +57,15 @@
                 <label>访客手机：<input v-model="visitor.phone" /></label>
                 <label>访客事由：<input v-model="visitor.reason" /></label><br/>
                 <label>访客部门：<input v-model="visitor.department" /></label>
-                <label>邀 约 人 ：<input v-model="visitor.inviter" /></label>
+                <label>邀约日期：<input type="date" v-model="visitor.inviterDate" /></label>
+
                 <label>访客时间：
-                    <input type="datetime-local" v-model="visitor.startTime" />
+                    <input type="time" v-model="visitor.startTime" />
                     至
-                    <input type="datetime-local" v-model="visitor.endTime" />
-                </label><br/>
-                <button @click="searchVisitors">搜索</button>
+                    <input type="time" v-model="visitor.endTime" />
+                </label>
+                <br/>
+                <button @click="searchVisitors()">搜索</button>
             </el-main>
             <el-main v-if="showTable3" style="text-align: left; ">
                 <label>姓名：<input v-model="visitor.name" /></label>
@@ -221,7 +223,7 @@
             </el-table>
             </el-table>
             <el-table v-if="showTable2":data="tableData2" :columns="tableColumns">
-                <el-table-column prop="number" label="序号" width="60">
+                <el-table-column prop="visitorPhone" label="序号" width="60">
                 </el-table-column>
                 <el-table-column prop="visitorName" label="访客姓名" width="100">
                 </el-table-column>
@@ -247,7 +249,7 @@
                                     <div>
                                         <div class="info-item">
                                             <strong>访客姓名：</strong>
-                                            <div class="content">{{ content.visitorName }}</div>
+                                            <div class="content">{{ content.visitorName}}</div>
                                         </div>
                                         <div class="info-item">
                                             <strong>所属公司：</strong>
@@ -265,16 +267,17 @@
                                             <strong>操作员：</strong>
                                             <div class="content">{{ content.blockpeople }}</div>
                                         </div>
-                                        <el-input v-model="newReason" placeholder="请输入拉黑原因"></el-input>
+                                        <el-input v-model="newReason"  placeholder="请输入拉黑原因"></el-input>
                                     </div>
                                 </div>
 
 
 
                                 <div style="display: flex; justify-content: space-between;">
-                                    <el-button @click="showReasonDialog(scope.row.visitorPhone)">填写原因</el-button>
-                                    <el-button type="primary" icon="el-icon-check" @click="handleMove(scope.row.visitorPhone)">移除</el-button>
+                                    <el-button @click="showReasonDialog(content. visitorPhone)">填写原因</el-button>
+                                    <el-button type="primary" icon="el-icon-check" @click="handleMove(content. visitorPhone)">移除</el-button>
                                 </div>
+
                             </el-dialog>
                         </div>
                     </template>
@@ -331,6 +334,7 @@
                     },},
                 content1:{
                     visitorName: '',
+                    visitorPhone:'',
                     affiliatedUnit: '',
                     blockreason:'',
                     blocktime:'',
@@ -359,38 +363,47 @@
                     phone: '',
                     reason: '',
                     department: '',
-                    inviter: '',
+                    inviterDate: '',
                     startTime: '',
                     endTime: ''
                 },
 
             }
         },
+        created() {
+            const that = this;
+            that.handleTabClick({ name: 'unreviewed' });
+        },
         methods: {
-            mounted() {
-                // Call the handleTabClick function with the default tabname
-                this.handleTabClick({ name: 'unreviewed' });
-            },
             searchVisitors() {
                 // 构建请求数据
+                const that = this;
+                console.log(this.tabname)
                 const filter = {
                     visitorName: this.visitor.name,
                     visitorPhone: this.visitor.phone,
                     visitreason: this.visitor.reason,
                     visitAreas: this.visitor.department,
-                    // inviter: this.visitor.inviter,
-                    // startTime: this.visitor.startTime,
-                    // endTime: this.visitor.endTime
+                    arrivedate: this.visitor.inviterDate,
+                    arrivetime: this.visitor.startTime,
+                    lefttime: this.visitor.endTime,
                 };
                 const page = 0; // 可选，根据你的需求设置
                 const pageSize = 8; // 可选，根据你的需求设置
 
                 // 发送 POST 请求
-                axios.post('/search?page=' + page + '&pageSize=' + pageSize, filter)
+                axios.post('/search?page=' + page + '&pageSize=' + pageSize +'&tabname=' + this.tabname, filter)
                     .then(response => {
                         // 请求成功的处理
                         console.log(response.data);
-                        this.tableData = response.data;
+                        if(this.tabname==='unreviewed') {
+                            this.tableData = response.data.content;
+                        }
+                        else if(this.tabname==='reviewed') {
+                            this.tableData1 = response.data.content;
+                        }
+                        this.total = response.data.totalElements;
+
                     })
                     .catch(error => {
                         // 请求失败的处理
@@ -401,13 +414,16 @@
             showReasonDialog(visitorPhone) {
                 // 将 newReason 的内容发送给后端更新 blockreason
                 this.dialogVisible1 = false;
+                const that = this;
+                console.log(visitorPhone);
                 axios.post('/addreason', {
                     visitorPhone: visitorPhone, // 假设这是访客的手机号
                     blockreason: this.newReason,
                     blockpeople:this.storedUsername,
                 }).then(response => {
                     // 更新 content 中的 blockreason
-                    this.content.blockreason = this.newReason;
+                    this.newReason ="";
+                    that.getBlockTableData(1);
                     // 关闭对话框或执行其他逻辑
                 }).catch(error => {
                     console.error('更新失败:', error);
@@ -421,6 +437,7 @@
             },
             handleCheck1(visitorPhone){
                 //黑名单中查看方法
+                const that = this;
                 this.dialogVisible1 = true;
                 axios.get('/blockinfo', {
                     params: {
@@ -429,10 +446,13 @@
                 })
                     .then(response => {
                         this.content.visitorName = response.data.visitorName;
+                        this.content.visitorPhone= response.data.visitorPhone;
                         this.content.affiliatedUnit = response.data.affiliatedUnit;
                         this.content.blockreason = response.data.blockreason;
+                        this.newReason= response.data.blockreason;
                         this.content. blocktime = response.data. blocktime;
                         this.content. blockpeople = response.data. blockpeople;
+                        that.getBlockTableData(1);
 
                     })
                     .catch(error => {
@@ -441,6 +461,7 @@
             },
             handleMove(visitorPhone) {
                 //黑名单移除方法
+                const that = this;
                 this.dialogVisible1 = false;
                 axios.get('/removeblock', {
                     params: {
@@ -449,7 +470,7 @@
                 })
                     .then(response => {
                         this.content = response.data;
-
+                        that.getBlockTableData(1);
 
                     })
                     .catch(error => {
@@ -520,6 +541,7 @@
             //3
             handleReject(visitorPhone) {
                 // 拒绝操作的逻辑
+                const that = this;
                 axios.get('/refuse', {
 
                     params: {
@@ -529,10 +551,13 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        if(response.data==="拒绝成功")
+                        if(response.data==="拒绝成功"){
                             alert("拒绝成功");
-                        else
+                            that.getTableData('unreviewed',1);
+                        }
+                        else {
                             alert("权限不足");
+                        }
                     })
                     .catch(function (error) {
                         console.error(error);
@@ -556,6 +581,7 @@
                 const blocktime = getCurrentFormattedTime();
 
                 // 拉黑操作的逻辑
+                const that = this;
                 axios.post('/block', {
                     visitorPhone: row.visitorPhone,
                     visitorName: row.visitorName,
@@ -564,6 +590,7 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
+                        that.getTableData('unreviewed',1);
                     })
                     .catch(function (error) {
                         console.error(error);
