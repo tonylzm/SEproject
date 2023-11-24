@@ -8,6 +8,7 @@
 
 package com.example.seproject.controller;
 
+import com.example.seproject.config.BlockSpecification;
 import com.example.seproject.config.VisitinfoSpecification;
 import com.example.seproject.entity.History;
 import com.example.seproject.entity.User;
@@ -328,6 +329,15 @@ public class VisitinfoControll {
             case "reviewed" -> v.findAll(spec, pageable);
             default -> null;
         };
+    }
+
+    @PostMapping("/blocksearch")
+    public Page<block> blocksearch(@RequestBody block filter,
+                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                  @RequestParam(value = "pageSize", defaultValue = "8") int pageSize ){
+        Pageable pageable = PageRequest.of(page, pageSize);
+        BlockSpecification spec = new BlockSpecification(filter);
+        return b.findAll(spec, pageable);
     }
 }
 

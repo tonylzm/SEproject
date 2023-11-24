@@ -70,7 +70,7 @@
             <el-main v-if="showTable3" style="text-align: left; ">
                 <label>姓名：<input v-model="visitor.name" /></label>
                 <label>操作员 ：<input v-model="visitor.operator" /></label>
-                <button>搜索</button>
+                <button @click="searchBlock()">搜索</button>
             </el-main>
 
 
@@ -375,6 +375,31 @@
             that.handleTabClick({ name: 'unreviewed' });
         },
         methods: {
+            searchBlock(){
+                // 构建请求数据
+                const that = this;
+                console.log(this.tabname)
+                const filter = {
+                    visitorName: this.visitor.name,
+                    blockpeople: this.visitor.operator,
+                };
+                const page = 0; // 可选，根据你的需求设置
+                const pageSize = 8; // 可选，根据你的需求设置
+
+                // 发送 POST 请求
+                axios.post('/blocksearch?page=' + page + '&pageSize=' + pageSize +'&tabname=' + this.tabname, filter)
+                    .then(response => {
+                        // 请求成功的处理
+                        console.log(response.data);
+                        this.tableData2 = response.data.content;
+                        this.total = response.data.totalElements;
+
+                    })
+                    .catch(error => {
+                        // 请求失败的处理
+                        console.error(error);
+                    });
+            },
             searchVisitors() {
                 // 构建请求数据
                 const that = this;
