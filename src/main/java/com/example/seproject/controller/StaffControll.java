@@ -3,6 +3,9 @@ package com.example.seproject.controller;
 import com.example.seproject.entity.Internal_staff;
 import com.example.seproject.jpa.InStaffDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.example.seproject.service.Check;
@@ -52,6 +55,13 @@ public class StaffControll {
     @GetMapping("/allstaff")
     public Iterable<Internal_staff> allstaff() {
         Iterable<Internal_staff> internal_staffs = i.findAll();
+        return internal_staffs;
+    }
+
+    @GetMapping("/pagesallstaff")
+    public Page<Internal_staff> pagesallstaff(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Internal_staff> internal_staffs = i.findAll(pageable);
         return internal_staffs;
     }
 
