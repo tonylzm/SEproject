@@ -298,7 +298,7 @@
         data() {
             return {
                 newReason: '',
-                tabname:'',
+                tabname: 'unreviewed',
                 showTable0:true ,
                 showTable:true ,
                 showTable1:false ,
@@ -367,6 +367,10 @@
             }
         },
         methods: {
+            mounted() {
+                // Call the handleTabClick function with the default tabname
+                this.handleTabClick({ name: 'unreviewed' });
+            },
             searchVisitors() {
                 // 构建请求数据
                 const filter = {
@@ -490,9 +494,8 @@
             //2
             handleApprove(visitorPhone) {
                 // console.log('批准点击，访客电话:', visitorPhone);
-
                 // 在这里可以使用点击行的数据，例如将其发送到API，更新Vuex存储等
-
+                const that = this;
                 axios.get('/vet', {
 
                     params: {
@@ -502,10 +505,13 @@
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        if (response.data==="审核成功")
-                            alert("批准成功");
-                        else
+                        if (response.data === "审核成功"){
+                            alert("审核成功");
+                            that.getTableData('unreviewed',1);
+                        }
+                        else {
                             alert("权限不足");
+                        }
                     })
                     .catch(function (error) {
                         console.error(error);
@@ -657,6 +663,7 @@
         }
 
     });
+
 
 </script>
 </html>
