@@ -327,6 +327,9 @@ public class VisitinfoControll {
         return switch (tabname) {
             case "unreviewed" -> v.findAll(spec, pageable);
             case "reviewed" -> v.findAll(spec, pageable);
+            case "coming" -> v.findAll(spec, pageable);
+            case "accessing" -> v.findAll(spec, pageable);
+            case "history" -> v.findAll(spec, pageable);
             default -> null;
         };
     }

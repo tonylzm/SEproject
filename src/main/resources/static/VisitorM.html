@@ -49,13 +49,14 @@
                 <label>访客手机：<input v-model="visitor.phone" /></label>
                 <label>访客事由：<input v-model="visitor.reason" /></label><br/>
                 <label>访客部门：<input v-model="visitor.department" /></label>
-                <label>邀 约 人 ：<input v-model="visitor.inviter" /></label>
+                <label>邀约日期：<input type="date" v-model="visitor.inviterDate" /></label>
+
                 <label>访客时间：
-                    <input type="datetime-local" v-model="visitor.startTime" />
+                    <input type="time" v-model="visitor.startTime" />
                     至
-                    <input type="datetime-local" v-model="visitor.endTime" />
+                    <input type="time" v-model="visitor.endTime" />
                 </label><br/>
-                <button>搜索</button>
+                <button @click="searchVisitors()">搜索</button>
             </el-main>
 
             <el-table  v-if="showTable" :data="tableData" :columns="tableColumns">
@@ -380,7 +381,7 @@
         el: '#app',
         data() {
             return {
-                tabname:'',
+                tabname:'coming',
                 showTable0:true ,
                 showTable:true ,
                 showTable1:false ,
@@ -444,14 +445,55 @@
                     phone: '',
                     reason: '',
                     department: '',
-                    inviter: '',
+                    inviterDate: '',
                     startTime: '',
                     endTime: ''
                 },
 
             }
         },
+        created() {
+            const that = this;
+            that.handleTabClick({ name: 'coming' });
+        },
         methods: {
+            searchVisitors() {
+                // 构建请求数据
+                const that = this;
+                console.log(this.tabname)
+                const filter = {
+                    visitorName: this.visitor.name,
+                    visitorPhone: this.visitor.phone,
+                    visitreason: this.visitor.reason,
+                    visitAreas: this.visitor.department,
+                    arrivedate: this.visitor.inviterDate,
+                    arrivetime: this.visitor.startTime,
+                    lefttime: this.visitor.endTime,
+                };
+                const page = 0; // 可选，根据你的需求设置
+                const pageSize = 8; // 可选，根据你的需求设置
+
+                // 发送 POST 请求
+                axios.post('/search?page=' + page + '&pageSize=' + pageSize +'&tabname=' + this.tabname, filter)
+                    .then(response => {
+                        // 请求成功的处理
+                        console.log(response.data);
+                        if(this.tabname==='coming') {
+                            this.tableData = response.data.content;
+                        }
+                        else if(this.tabname==='accessing') {
+                            this.tableData1 = response.data.content;
+                        } else if(this.tabname==='history') {
+                            this.tableData2 = response.data.content;
+                        }
+                        this.total = response.data.totalElements;
+
+                    })
+                    .catch(error => {
+                        // 请求失败的处理
+                        console.error(error);
+                    });
+            },
             handleUnreviewedClick: function ()
             {
                 this.showTable = true;
