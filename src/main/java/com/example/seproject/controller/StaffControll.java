@@ -1,5 +1,6 @@
 package com.example.seproject.controller;
 
+import com.example.seproject.config.StaffSpecification;
 import com.example.seproject.entity.Internal_staff;
 import com.example.seproject.jpa.InStaffDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,8 @@ public class StaffControll {
     }
 
     @GetMapping("/pagesallstaff")
-    public Page<Internal_staff> pagesallstaff(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+    public Page<Internal_staff> pagesallstaff(@RequestParam("page") int page,
+                                              @RequestParam("pageSize") int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Internal_staff> internal_staffs = i.findAll(pageable);
         return internal_staffs;
@@ -82,5 +84,14 @@ public class StaffControll {
 
         }
         return "权限不足";
+    }
+    @PostMapping("/staffsearch")
+    public Page<Internal_staff> staffsearch(@RequestBody Internal_staff filter,
+                                            @RequestParam(value = "page", defaultValue = "0") int page,
+                                            @RequestParam(value = "pageSize", defaultValue = "8") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        StaffSpecification spec=new StaffSpecification(filter);
+        return i.findAll(spec,pageable);
+
     }
 }
