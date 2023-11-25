@@ -38,12 +38,6 @@ public class SendControll {
         return s.findAll(pageable);
     }
 
-    @GetMapping("/deletesub")
-    public String deletesub(@RequestParam("UUID")String UUID){
-        s.deleteById(UUID);
-        return "success";
-    }
-
 
 
 }
