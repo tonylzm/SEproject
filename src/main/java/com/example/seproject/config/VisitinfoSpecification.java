@@ -49,8 +49,19 @@ public class VisitinfoSpecification implements Specification<visitinfo> {
             predicates.add(cb.isNull(root.get("applicationStatus")));
         } else if ("reviewed".equals(tabname) && (filter.isApplicationStatusIsNull() || filter.getApplicationStatus() == null)) {
             predicates.add(cb.isNotNull(root.get("applicationStatus")));
+        } else if ("coming".equals(tabname)) {
+            // Add conditions for 'coming' tab
+            System.out.println("coming");
+            predicates.add(cb.equal(root.get("applicationStatus"), "通过"));
+            predicates.add(cb.isNull(root.get("UUID")));
+        } else if ("accessing".equals(tabname)) {
+            // Add conditions for 'access' tab
+            predicates.add(cb.equal(root.get("applicationStatus"), "通过"));
+            predicates.add(cb.isNotNull(root.get("UUID")));
+        } else if ("history".equals(tabname)) {
+            // Add conditions for 'history' tab
+            predicates.add(cb.equal(root.get("applicationStatus"), "已访问"));
         }
-
         return cb.and(predicates.toArray(new Predicate[0]));
     }
 }

@@ -5,6 +5,9 @@ import com.example.seproject.entity.visitinfo;
 import com.example.seproject.jpa.InviteDao;
 import com.example.seproject.service.Check;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +37,12 @@ public class InviteControll {
     public Iterable<invite> getAllData(){
         return i.findAll();
     }
-
+@GetMapping("/pagesinvite")
+    public Page<invite> getPagesData( @RequestParam(value = "page", defaultValue = "0") int page,
+                                      @RequestParam(value = "pageSize", defaultValue = "8") int pageSize ){
+    Pageable pageable = PageRequest.of(page, pageSize);
+    return i.findByStatus("未处理",pageable);
+}
     @GetMapping("/inviteinfo")//获取邀请信息
     public invite getInfo(@RequestParam("inviterPhone")String inviterPhone){
         return i.findByInviterPhone(inviterPhone);
