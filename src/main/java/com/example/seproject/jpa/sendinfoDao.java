@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface sendinfoDao extends JpaRepository<sendinfo,Integer> {
 
     Page<sendinfo>  findByVisitPhone(String visitPhone, Pageable pageable);
+
+    void deleteById(String uuid);
 }

@@ -37,4 +37,13 @@ public class SendControll {
         Pageable pageable = PageRequest.of(page, pageSize);
         return s.findAll(pageable);
     }
+
+    @GetMapping("/deletesub")
+    public String deletesub(@RequestParam("UUID")String UUID){
+        s.deleteById(UUID);
+        return "success";
+    }
+
+
+
 }

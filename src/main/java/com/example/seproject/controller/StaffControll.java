@@ -93,4 +93,28 @@ public class StaffControll {
         return i.findAll(spec,pageable);
 
     }
+
+    @GetMapping("/updatestaff")//编辑员工信息，需要主管权限
+    public String updatestaff(
+            @RequestParam("edit") String edit,
+            @RequestParam("StaffIdcard") String StaffIdcard,
+            @RequestParam("StaffName") String StaffName,
+            @RequestParam("StaffAffiliatedUnit") String StaffAffiliatedUnit,
+            @RequestParam("StaffPosition") String StaffPosition,
+            @RequestParam("StaffPhone") String StaffPhone,
+            @RequestParam("StaffPassword") String StaffPassword) {
+        if (check.checkpower(edit).contains("主管")) {
+            {
+                Internal_staff internal_staff = i.findByStaffIdcard(StaffIdcard);
+                internal_staff.setStaffName(StaffName);
+                internal_staff.setStaffAffiliatedUnit(StaffAffiliatedUnit);
+                internal_staff.setStaffPosition(StaffPosition);
+                internal_staff.setStaffPhone(StaffPhone);
+                internal_staff.setStaffPassword(StaffPassword);
+                i.save(internal_staff);
+                return "修改成功";
+            }
+        }
+        return "权限不足";
+    }
 }
