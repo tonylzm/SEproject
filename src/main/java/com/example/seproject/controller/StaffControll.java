@@ -81,7 +81,6 @@ public class StaffControll {
                 i.save(internal_staff);
                 return "修改成功";
             }
-
         }
         return "权限不足";
     }

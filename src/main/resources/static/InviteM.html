@@ -62,7 +62,7 @@
                     <el-input
                             placeholder="请输入访客联系方式"
                             v-model="visitor.inviterPhone"
-                            style="width: 400px">
+                            style="width: 400px" maxlength="11">
                     </el-input>
                 </div>
                 <br/>
@@ -216,15 +216,26 @@
 
             async submitForm() {
                 try {
+                    if(this.visitor.inviterPhone.length!==11){
+                        alert("请输入正确的联系电话");
+                        return;
+                    }
                     const response = await axios.post('/invite', {
                         inviterPhone: this.visitor.inviterPhone, // 提交访客的联系方式
                         // 其他表单数据按照后端的字段名进行对应
                         inviterName: this.visitor.inviterName,
                         inviterCompany: this.visitor.inviterCompany,
-                        visitDate: this.visitor.visitDate,
+                        visitDate: this.visitor.visitDate.toISOString().split('T')[0],
                         reason: this.inviter.reason
                     });
                     console.log(response.data); // 在控制台中输出后端返回的数据
+                    alert("提交成功");
+                    //清空表单
+                    this.visitor.inviterName='';
+                    this.visitor.inviterPhone='';
+                    this.visitor.inviterCompany='';
+                    this.visitor.visitDate='';
+                    this.inviter.reason='';
                     // 处理响应，例如更新前端的状态信息等
                 } catch (error) {
                     console.error('提交表单出错：', error);

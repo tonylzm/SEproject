@@ -46,7 +46,7 @@
             <span>欢迎，xx（工号： {{ storedUsername }}）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
             <el-main v-if="showTable0" style="text-align: left;">
                 <label>访客姓名：<input v-model="visitor.name" /></label>
-                <label>访客手机：<input v-model="visitor.phone" /></label>
+                <label>访客手机：<input v-model="visitor.phone" maxlength="11" /></label>
                 <label>访客事由：<input v-model="visitor.reason" /></label><br/>
                 <label>访客部门：<input v-model="visitor.department" /></label>
                 <label>邀约日期：<input type="date" v-model="visitor.inviterDate" /></label>

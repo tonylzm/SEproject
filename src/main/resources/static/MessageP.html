@@ -43,39 +43,37 @@
             <span>欢迎，xx（工号： {{ storedUsername }}）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
             <el-main v-if="showTable0" style="text-align: left;">
                 <label>访客姓名：<input v-model="visitor.name" /></label>
-                <label>访客手机：<input v-model="visitor.phone" /></label>
+                <label>访客手机：<input v-model="visitor.phone" maxlength="11" /></label>
                 <label>访客事由：<input v-model="visitor.reason" /></label><br/>
                 <label>访客部门：<input v-model="visitor.department" /></label>
-                <label>邀 约 人 ：<input v-model="visitor.inviter" /></label>
+                <label>邀约日期：<input type="date" v-model="visitor.inviterDate" /></label>
+
                 <label>访客时间：
-                    <input type="datetime-local" v-model="visitor.startTime" />
+                    <input type="time" v-model="visitor.startTime" />
                     至
-                    <input type="datetime-local" v-model="visitor.endTime" />
-                </label><br/>
-                <button>搜索</button>
+                    <input type="time" v-model="visitor.endTime" />
+                </label>
+                <br/>
+                <button  @click="searchVisitors()">搜索</button>
             </el-main>
 
             <el-table  v-if="showTable" :data="tableData" :columns="tableColumns">
-                <el-table-column prop="number" label="访问序号" width="100">
-                </el-table-column>
                 <el-table-column prop="visitorName" label="访客姓名" width="100">
                 </el-table-column>
-                <el-table-column prop="visitPhone" label="访客电话" width="160">
+                <el-table-column prop="visitorPhone" label="访客电话" width="160">
                 </el-table-column>
-                <el-table-column prop="Affiliation" label="所属单位" width="100">
+                <el-table-column prop="affiliatedUnit" label="所属单位" width="100">
                 </el-table-column>
-                <el-table-column prop="Operator" label="操作员" width="100">
+                <el-table-column prop="licensePlate" label="车牌号" width="100">
                 </el-table-column>
-                <el-table-column prop="Number" label="车牌号" width="100">
-                </el-table-column>
-                <el-table-column prop="arrivetime" label="预约时间" width="160">
+                <el-table-column prop="arrivetime" label="到达时间" width="160">
                 </el-table-column>
                 <el-table-column prop="applicationStatus" label="访问状态" width="80">
                 </el-table-column>
                 <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="100" >
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" @click="dialogVisible = true" size="small" >发消息</el-button>
+                            <el-button type="primary" @click="dialoginVisible(scope.row.visitorPhone)" size="small" >发消息</el-button>
                             <el-dialog title="发送消息" :visible.sync="dialogVisible" :before-close="handleClose">
                                 <el-form ref="messageForm" :model="messageForm" label-width="100px">
                                     <el-form-item label="主题">
@@ -86,7 +84,7 @@
                                     </el-form-item>
                                 </el-form>
                                 <span slot="footer" class="dialog-footer">
-                                  <el-button type="primary" @click="sendMessage">确 定</el-button>
+                                  <el-button type="primary" @click="sendMessage()">确 定</el-button>
                                     <el-button @click="dialogVisible = false">取 消</el-button>
                                 </span>
                             </el-dialog>
@@ -112,6 +110,7 @@
                 showTable0:true ,
                 showTable:true ,
                 storedUsername:localStorage.getItem('username'),
+                visitorPhone:'',
 
                 content:"",
                 content1:"",
@@ -142,14 +141,31 @@
 
             }
         },
+        created() {
+            const that = this;
+            that.handleTabClick({ name: "accessing" });
+        },
         methods: {
+            searchVisitors(){
+                this. getTableData("accessing",1);
+            },
+            clear() {
+                this.messageForm.title = '';
+                this.messageForm.content = '';
+            },
+            dialoginVisible(visitorPhone){
+                console.log(visitorPhone);
+                this.dialogVisible = true;
+                this.visitorPhone=visitorPhone;
+            },
             handleUnreviewedClick: function ()
             {
                 this.showTable = true;
                 this.showTable1 = true;
             },
-            sendMessage(visitPhone) {
+            sendMessage() {
                 // 在这里使用 Axios 发送 POST 请求到后端方法
+                const that = this;
                 function getCurrentFormattedTime() {
                     const currentDate = new Date();
                     const year = currentDate.getFullYear();
@@ -161,27 +177,26 @@
                     return `${year}-${month}-${day} ${hours}:${minutes}`;
                 }
                 const sendtime = getCurrentFormattedTime();
-                axios.post('/addstaff', {
+                axios.post('/addsub', {
                     // 构造需要发送的数据
                     // 例如，如果需要发送 textarea 内容，可以这样:
-
-                    visitPhone:this.visitPhone,
-                    subtance: this.messageForm.content,
+                    visitPhone:this.visitorPhone,
+                    substance: this.messageForm.content,
                     edit:this.storedUsername,
                     title:this.messageForm.title,
                     time:sendtime,
-
                     // 如果后端需要其他数据，根据后端接口要求传递相应的数据
                 })
                     .then(response => {
-                        if (response.data==="success")
+                        if (response.data==="success") {
                             alert("发送成功");
+                            that.clear();
+                            this.dialogVisible = false;
+                        }
                         else
                             alert("发送错误");
                         this.textarea = '';
-
                     })
-
                     .catch(error => {
                         // 处理错误
                         console.error('消息发送失败:', error);
