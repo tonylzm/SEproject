@@ -21,7 +21,7 @@ public class StaffSpecification implements Specification<Internal_staff> {
     public Predicate toPredicate(Root<Internal_staff> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
         if (filter.getStaffIdcard()!= null) {
-            predicates.add(cb.like(root.get("staffIdCard"), "%" + filter.getStaffIdcard() + "%"));
+            predicates.add(cb.like(root.get("staffIdcard"), "%" + filter.getStaffIdcard() + "%"));
         }
         if (filter.getStaffPosition() != null) {
             predicates.add(cb.like(root.get("staffPosition"), "%" + filter.getStaffPosition() + "%"));

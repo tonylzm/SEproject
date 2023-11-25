@@ -44,8 +44,6 @@
 
 
 <div id="app">
-
-
     <el-header style="text-align: right; font-size: 10px;">
         <el-tabs v-model="tabledata" type="border-card" @tab-click="handleTabClick">
             <el-tab-pane label="员工管理" name="manage" ></el-tab-pane>
@@ -140,21 +138,18 @@
                 </el-dialog>
             </el-main>
 
+
+
             <el-table  v-if="showTable1" :data="tableData1" :columns="tableColumns">
                 <el-table-column prop="staffName" label="员工姓名" width="100">
-                    {{ content.staffName}}
                 </el-table-column>
                 <el-table-column prop="staffAffiliatedUnit" label="所属部门" width="100">
-                    {{ content.staffAffiliatedUnit}}
                 </el-table-column>
                 <el-table-column prop="staffPosition" label="当前职务" width="100">
-                    {{ content.staffPosition}}
                 </el-table-column>
-                <el-table-column prop="staffIdCard" label="工号" width="160">
-                    {{ content.staffIdCard}}
+                <el-table-column prop="staffIdcard" label="工号" width="160">
                 </el-table-column>
                 <el-table-column prop="staffPhone" label="手机" width="160">
-                    {{ content.staffPhone}}
                 </el-table-column>
                 <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="250" >
                     <template slot-scope="scope">
@@ -183,7 +178,8 @@
                 </el-table-column>
             </el-table>
 
-            <el-main v-if="showTable" style="text-align: left;">
+
+            <el-main v-if="showTable4" style="text-align: left;">
                 <div class="float-div">
                     <h2>设置管控时间段</h2>
                     <div class="float-div">
@@ -233,12 +229,9 @@
                                margin:0 auto"
                                round>添加</el-button>
                 </div>
-
-
             </el-main>
         </el-tabs>
         <el-pagination v-if="pagin1"  @current-change="handlePageChange1" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
-
     </el-header>
 
 
@@ -252,20 +245,23 @@
         data() {
             return {
                 tabname:'',
-                showTable1:true ,
+                showTable4:false,
+                showTable1:true,
                 showTable0:true,
-                // content:"",
                 content1:"",
                 dialogVisible:false,
                 dialogVisible1:false,
                 pagin1:false,
 
 
-                tableData1:[],
-
+                tableData:[],
+                visitor: {
+                    startTime: '',
+                    endTime: ''
+                },
                 //分页数据
                 page:1,
-                pageSize: 4, // 每页显示的条数
+                pageSize: 8, // 每页显示的条数
                 total:0,
                 content: {
                     staffName: '',
@@ -332,64 +328,52 @@
 
             }
         },
+        created() {
+            const that = this;
+            that.handleTabClick({ name: 'manage' });
+        },
         methods: {
             searchEmployee() {
                 // 构建请求数据
-                this.getTableData(this.tabname,1);
+                this.getTableData(1);
             },
             handleUnreviewedClick: function ()
             {
                 this.showTable = true;
                 this.showTable1 = true;
-                this.showTable0 = true;
             },
 
             handleReviewedClick() {
                 // 处理已审核记录标签页点击事件
                 console.log('已审核记录标签页被点击了');
             },
-
-
-            handleDelay(row) {
-                // 延期操作的逻辑
-            },
-
             handleTabClick(tab,event) {
                 console.log(tab, event);//xx
                 if (tab.name === 'manage') {
                     this.tabname=tab.name;
                     this.showTable0 = true;
-                    this.showTable = false;
+                    this.showTable4 = false;
                     this.showTable1 = true;
                     this.pagin1=true;
-                    this.getTableData(this.tabname,1);
-
+                    this.getTableData(1);
                 } else if (tab.name === 'control') {
                     this.tabname=tab.name;
-                    this.showTable = true;
+                    this.showTable4 = true;
                     this.showTable1 = false;
                     this.showTable0 = false;
                     this.pagin1=false;
-                    // this.getTableData(this.tabname,1);
-
                 }
             },
             //后端获取数据
-            handlePageChange(page) {
-                this.getTableData(this.tabname,page);
-            },
             handlePageChange1(page) {
-                this. getBlockTableData(page);
-            },
-            handlePageChange2(page) {
-                this.getTableData(this.tabname,page);
+                this. getTableData(page);
             },
 
-            getTableData(tabname,page) {
+
+            getTableData(page) {
                 const that = this;
-                console.log(this.tabname);
                 const filter = {
-                    staffIdCard:this.employee.idcard,
+                    staffIdcard:this.employee.idcard,
                     staffPosition:this.employee.position,
                     staffAffiliatedUnit:this.employee.affiliation,
 
@@ -398,18 +382,12 @@
                 const pageSize = 8; // 可选，根据你的需求设置
 
                 // 发送 POST 请求
-                axios.post('/staffsearch?page=' + page1 + '&pageSize=' + pageSize +'&tabname=' + this.tabname, filter)
+                axios.post('/staffsearch?page=' + page1 + '&pageSize=' + pageSize , filter)
                     .then(response => {
                         // 请求成功的处理
                         console.log(response.data);
-                        if(this.tabname==='control') {
-                            // this.tableData = response.data.content;
-                            this.page=page;
-                        }
-                        else if(this.tabname==='manage') {
-                            this.tableData1 = response.data.content;
-                            this.page=page;
-                        }
+                        this.tableData1 = response.data.content;
+                        this.page=page;
                         this.total = response.data.totalElements;
 
                     })
@@ -433,8 +411,6 @@
 
                     console.log("点击确定时触发");
                 });
-
-
         }}
 
     });
