@@ -75,14 +75,9 @@
 
 
             <el-table  v-if="showTable" :data="tableData" :columns="tableColumns">
-                <el-table-column prop="number" label="序号" width="60">
-                </el-table-column>
                 <el-table-column prop="visitAreas" label="到访区域" width="100">
                 </el-table-column>
                 <el-table-column prop="visitreason" label="访问事由" width="100">
-                </el-table-column>
-                </el-table-column>
-                <el-table-column prop="transport" label="通行方式" width="100">
                 </el-table-column>
                 </el-table-column>
                 <el-table-column prop="visitorName" label="访客姓名" width="100">
@@ -91,16 +86,10 @@
                 <el-table-column prop="visitorPhone" label="电话" width="160">
                 </el-table-column>
                 </el-table-column>
-                <el-table-column prop="arrivetime" label="申请时间" width="160">
-                </el-table-column>
-                </el-table-column>
-                <el-table-column prop="duration" label="访问时长" width="100">
+                <el-table-column prop="arrivetime" label="到访时间" width="160">
                 </el-table-column>
                 </el-table-column>
                 <el-table-column prop="lockinfo" label="管控" width="80">
-                </el-table-column>
-                </el-table-column>
-                <el-table-column prop="blacklist" label="黑名单" width="80">
                 </el-table-column>
                 </el-table-column>
                 <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="300" >
@@ -117,14 +106,9 @@
 
             </el-table>
             <el-table  v-if="showTable1" :data="tableData1" :columns="tableColumns">
-                <el-table-column prop="number" label="序号" width="60">
-                </el-table-column>
                 <el-table-column prop="visitAreas" label="到访区域" width="100">
                 </el-table-column>
                 <el-table-column prop="visitreason" label="访问事由" width="100">
-                </el-table-column>
-                </el-table-column>
-                <el-table-column prop="transport" label="通行方式" width="100">
                 </el-table-column>
                 </el-table-column>
                 <el-table-column prop="visitorName" label="访客姓名" width="100">
@@ -134,9 +118,6 @@
                 </el-table-column>
                 </el-table-column>
                 <el-table-column prop="arrivertime" label="申请时间" width="160">
-                </el-table-column>
-                </el-table-column>
-                <el-table-column prop="duration" label="访问时长" width="100">
                 </el-table-column>
                 </el-table-column>
                 <el-table-column prop="lockinfo" label="管控" width="80">
@@ -223,8 +204,6 @@
             </el-table>
             </el-table>
             <el-table v-if="showTable2":data="tableData2" :columns="tableColumns">
-                <el-table-column prop="visitorPhone" label="序号" width="60">
-                </el-table-column>
                 <el-table-column prop="visitorName" label="访客姓名" width="100">
                 </el-table-column>
                 </el-table-column>
