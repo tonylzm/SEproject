@@ -217,7 +217,7 @@
             async submitForm() {
                 try {
                     const response = await axios.post('/invite', {
-                        inviterPhone: this.visitor.inviterPhone, // 提交访客联系方式
+                        inviterPhone: this.visitor.inviterPhone, // 提交访客的联系方式
                         // 其他表单数据按照后端的字段名进行对应
                         inviterName: this.visitor.inviterName,
                         inviterCompany: this.visitor.inviterCompany,
