@@ -285,9 +285,9 @@
 
             </el-table>
         </el-tabs>
-        <el-pagination v-if="pagin1"  @current-change="handlePageChange1" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
-        <el-pagination v-if="pagin2"  @current-change="handlePageChange2" :current-page="page1" :page-size="pageSize" :total="total"></el-pagination>
-        <el-pagination v-if="pagin"  @current-change="handlePageChange" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
+        <el-pagination v-if="pagin1"  @current-change="handlePageChange1" :current-page.sync="page" :page-size="pageSize" :total="total"></el-pagination>
+        <el-pagination v-if="pagin2"  @current-change="handlePageChange2" :current-page.sync="page" :page-size="pageSize" :total="total"></el-pagination>
+        <el-pagination v-if="pagin"  @current-change="handlePageChange" :current-page.sync="page" :page-size="pageSize" :total="total"></el-pagination>
     </el-header>
 
 
@@ -365,7 +365,8 @@
                     department: '',
                     inviterDate: '',
                     startTime: '',
-                    endTime: ''
+                    endTime: '',
+                    operator:null,
                 },
 
             }
@@ -376,64 +377,11 @@
         },
         methods: {
             searchBlock(){
-                // 构建请求数据
-                const that = this;
-                console.log(this.tabname)
-                const filter = {
-                    visitorName: this.visitor.name,
-                    blockpeople: this.visitor.operator,
-                };
-                const page = 0; // 可选，根据你的需求设置
-                const pageSize = 8; // 可选，根据你的需求设置
-
-                // 发送 POST 请求
-                axios.post('/blocksearch?page=' + page + '&pageSize=' + pageSize +'&tabname=' + this.tabname, filter)
-                    .then(response => {
-                        // 请求成功的处理
-                        console.log(response.data);
-                        this.tableData2 = response.data.content;
-                        this.total = response.data.totalElements;
-
-                    })
-                    .catch(error => {
-                        // 请求失败的处理
-                        console.error(error);
-                    });
+                this. getBlockTableData(1);
             },
             searchVisitors() {
                 // 构建请求数据
-                const that = this;
-                console.log(this.tabname)
-                const filter = {
-                    visitorName: this.visitor.name,
-                    visitorPhone: this.visitor.phone,
-                    visitreason: this.visitor.reason,
-                    visitAreas: this.visitor.department,
-                    arrivedate: this.visitor.inviterDate,
-                    arrivetime: this.visitor.startTime,
-                    lefttime: this.visitor.endTime,
-                };
-                const page = 0; // 可选，根据你的需求设置
-                const pageSize = 8; // 可选，根据你的需求设置
-
-                // 发送 POST 请求
-                axios.post('/search?page=' + page + '&pageSize=' + pageSize +'&tabname=' + this.tabname, filter)
-                    .then(response => {
-                        // 请求成功的处理
-                        console.log(response.data);
-                        if(this.tabname==='unreviewed') {
-                            this.tableData = response.data.content;
-                        }
-                        else if(this.tabname==='reviewed') {
-                            this.tableData1 = response.data.content;
-                        }
-                        this.total = response.data.totalElements;
-
-                    })
-                    .catch(error => {
-                        // 请求失败的处理
-                        console.error(error);
-                    });
+                this.getTableData(this.tabname,1);
             },
 
             showReasonDialog(visitorPhone) {
@@ -528,14 +476,6 @@
                     .catch(error => {
                         console.error(error);
                     });
-            },
-            handleReviewedClick() {
-                // 处理已审核记录标签页点击事件
-                console.log('已审核记录标签页被点击了');
-            },
-            handleBlacklistClick() {
-                // 处理黑名单标签页点击事件
-                console.log('黑名单标签页被点击了');
             },
             //2
             handleApprove(visitorPhone) {
@@ -670,52 +610,72 @@
                 this.getTableData(this.tabname,page);
             },
             getTableData(tabname,page) {
-                axios
-                    .get('/pagesallinfo', {
-                        params: {
-                            page: page - 1,
-                            pageSize: this.pageSize,
-                            status:tabname,
-                        }
-                    })
+                const that = this;
+                console.log(this.tabname)
+                const filter = {
+                    visitorName: this.visitor.name,
+                    visitorPhone: this.visitor.phone,
+                    visitreason: this.visitor.reason,
+                    visitAreas: this.visitor.department,
+                    arrivedate: this.visitor.inviterDate,
+                    arrivetime: this.visitor.startTime,
+                    lefttime: this.visitor.endTime,
+                };
+                const page1 = page-1; // 可选，根据你的需求设置
+                const pageSize = 8; // 可选，根据你的需求设置
+
+                // 发送 POST 请求
+                axios.post('/search?page=' + page1 + '&pageSize=' + pageSize +'&tabname=' + this.tabname, filter)
                     .then(response => {
-                        var tableData = response.data.content;
-                        if(tabname==='unreviewed') {
-                            this.tableData = tableData;
+                        // 请求成功的处理
+                        console.log(response.data);
+                        if(this.tabname==='unreviewed') {
+                            this.tableData = response.data.content;
+                            this.page=page;
                         }
-                        else if(tabname==='reviewed') {
-                            this.tableData1 = tableData;
+                        else if(this.tabname==='reviewed') {
+                            this.tableData1 = response.data.content;
+                            this.page=page;
                         }
                         this.total = response.data.totalElements;
+
                     })
                     .catch(error => {
-                        console.log(error);
+                        // 请求失败的处理
+                        console.error(error);
                     });
             },
             created() {
                 this.getTableData();
             },
             getBlockTableData(page) {
-                axios
-                    .get('/pagesblockall', {
-                        params: {
-                            page: page-1,
-                            pageSize: this.pageSize,
-                        }
-                    })
+                // 构建请求数据
+                const that = this;
+                console.log(this.tabname)
+                const filter = {
+                    visitorName: this.visitor.name,
+                    blockpeople: this.visitor.operator,
+                };
+                const page1= page-1; // 可选，根据你的需求设置
+                const pageSize = 8; // 可选，根据你的需求设置
+
+                // 发送 POST 请求
+                axios.post('/blocksearch?page=' + page1 + '&pageSize=' + pageSize +'&tabname=' + this.tabname, filter)
                     .then(response => {
-                        var tableData = response.data.content;
-                        this.tableData2=tableData;
+                        // 请求成功的处理
+                        console.log(response.data);
+                        this.tableData2 = response.data.content;
                         this.total = response.data.totalElements;
+                        this.page=page;
+
                     })
                     .catch(error => {
-                        console.log(error);
+                        // 请求失败的处理
+                        console.error(error);
                     });
             },
         }
 
     });
-
-
 </script>
 </html>

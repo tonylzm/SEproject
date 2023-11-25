@@ -270,6 +270,7 @@ public class VisitinfoControll {
         blockInfo.setVisitorName(request.getVisitorName());
         blockInfo.setAffiliatedUnit(request.getAffiliatedUnit());
         blockInfo.setBlocktime(request.getBlocktime());
+        blockInfo.setBlockpeople("管理员");
         visitinfo visitor = v.findByVisitorPhone(request.getVisitorPhone());
         if (visitor != null) {
             // 修改 applicationStatus 的值为 "拉黑"
