@@ -47,13 +47,13 @@
             <el-tab-pane label="我要邀请" name="invite" ></el-tab-pane>
             <el-tab-pane label="邀请审批" name="approval"></el-tab-pane>
 
-            <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
+            <span>欢迎，xx（工号： {{ storedUsername }}）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
             <el-main v-if="showTable" style="text-align: left;">
                 <div class="float-div">
                     <h2>访客姓名：</h2>
                     <el-input
                             placeholder="请输入姓名"
-                            v-model="visitor.name"
+                            v-model="visitor.inviterName"
                             style="width: 400px">
                     </el-input>
                 </div>
@@ -61,7 +61,7 @@
                     <h2>联系方式：</h2>
                     <el-input
                             placeholder="请输入访客联系方式"
-                            v-model="visitor.phone"
+                            v-model="visitor.inviterPhone"
                             style="width: 400px">
                     </el-input>
                 </div>
@@ -70,44 +70,39 @@
                     <h2>所属单位：</h2>
                     <el-input
                             placeholder="请输入访客所属单位"
-                            v-model="visitor.affiliation"
+                            v-model="visitor.inviterCompany"
                             style="width: 600px">
                     </el-input>
                 </div>
                 <br/>
                 <div>
-                    <h2>访客时间：</h2>
-                    <el-input
-                            v-model="visitor.startTime"
-                            type="datetime-local"
+                    <h2>访客预约时间：</h2>
+                    <el-date-picker
+                            v-model="visitor.visitDate"
+                            type="date"
+                            placeholder="选择日期"
                             style="width: 200px">
-
-                    </el-input>
-                    <el-input
-                            v-model="visitor.endTime"
-                            type="datetime-local"
-                            style="width: 200px">
-                    </el-input>
+                    </el-date-picker>
                 </div>
                 <br/>
                 <div>
                     <h2>邀约事由：</h2>
                     <el-input
                             placeholder="请输入内容"
-                            v-model="inviter.test">
+                            v-model="inviter.reason">
                     </el-input>
                 </div>
                 <br/>
-                <el-button type="primary" style="display:block;margin:0 auto" round>提交</el-button>
+                <el-button type="primary" style="display:block;margin:0 auto"  @click="submitForm" round>提交</el-button>
 <!--                <button>提交</button>-->
             </el-main>
 
             <el-table  v-if="showTable1" :data="tableData1" :columns="tableColumns">
-                <el-table-column prop="visitorName" label="访客姓名" width="100">
+                <el-table-column prop="inviterName" label="访客姓名" width="100">
                 </el-table-column>
-                <el-table-column prop="visitorPhone" label="联系方式" width="160">
+                <el-table-column prop="inviterPhone" label="联系方式" width="160">
                 </el-table-column>
-                <el-table-column prop="Affiliation" label="所属单位" width="100">
+                <el-table-column prop="inviterCompany" label="所属单位" width="100">
                 </el-table-column>
                 <el-table-column prop="Inviter" label="邀请人" width="100">
                 </el-table-column>
@@ -115,13 +110,13 @@
                 </el-table-column>
                 <el-table-column prop="Posts" label="职位" width="100">
                 </el-table-column>
-                <el-table-column prop="arrivetime" label="访问时间" width="160">
+                <el-table-column prop="visitDate" label="访问时间" width="160">
                 </el-table-column>
                 <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="150" >
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" icon="el-icon-close" @click="handleCheck1(scope.row.visitorPhone)" size="small">批准</el-button>
-                            <el-button type="danger" icon="el-icon-check" @click="handleMove(scope.row.visitorPhone)" size="small">驳回</el-button>
+                            <el-button type="primary" icon="el-icon-close" @click="inviteapprove(scope.row.inviterPhone)" size="small">批准</el-button>
+                            <el-button type="danger" icon="el-icon-check" @click="inviterefuse(scope.row.inviterPhone)" size="small">驳回</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -147,6 +142,7 @@
                 content1:"",
                 dialogVisible:false,
                 dialogVisible1:false,
+                storedUsername:localStorage.getItem('username'),
                 pagin:false,
                 pagin1:false,
                 pagin2:false,
@@ -158,12 +154,11 @@
                 total:0,
 
                 visitor: {
-                    name: '',
-                    phone: '',
-                    affiliation:'',
-                    startTime: '',
-                    endTime: '',
-                    test:'',
+                    inviterName: '',
+                    inviterPhone: '',
+                    inviterCompany:'',
+                    visitDate: '',
+                    reason:'',
                 },
                 inviter: {
                     reason: '',
@@ -172,6 +167,70 @@
             }
         },
         methods: {
+            inviteapprove(inviterPhone){
+             //前端批准邀约方法
+                axios.get('/invitevet', {
+                    params: {
+                        inviterPhone: inviterPhone,
+                        edit: this.storedUsername,
+                    }
+                })
+                    .then(response => {
+                        // 处理从服务器返回的成功响应
+                        console.log( response.data);
+                        if (response.data==="审核成功")
+                            alert("操作成功");
+                        else
+                            alert("权限不足");
+                    })
+                    .catch(error => {
+                        // 处理错误
+                        console.error( error);
+                        // 你可以在此处理不同的错误响应，比如 '权限不足'
+                    });
+
+            },
+            inviterefuse(inviterPhone){
+                //前端驳回邀约方法
+                axios.get('/inviterefuse', {
+                    params: {
+                        inviterPhone: inviterPhone,
+                        edit: this.storedUsername,
+                    }
+                })
+                    .then(response => {
+                        // 处理从服务器返回的成功响应
+                        console.log( response.data);
+                        if (response.data==="审核成功")
+                            alert("操作成功");
+                        else
+                            alert("权限不足");
+                    })
+                    .catch(error => {
+                        // 处理错误
+                        console.error(error);
+                        // 你可以在此处理不同的错误响应，比如 '权限不足'
+                    });
+
+            },
+
+            async submitForm() {
+                try {
+                    const response = await axios.post('/invite', {
+                        inviterPhone: this.visitor.inviterPhone, // 提交访客联系方式
+                        // 其他表单数据按照后端的字段名进行对应
+                        inviterName: this.visitor.inviterName,
+                        inviterCompany: this.visitor.inviterCompany,
+                        visitDate: this.visitor.visitDate,
+                        reason: this.inviter.reason
+                    });
+                    console.log(response.data); // 在控制台中输出后端返回的数据
+                    // 处理响应，例如更新前端的状态信息等
+                } catch (error) {
+                    console.error('提交表单出错：', error);
+                    // 处理错误，例如显示错误消息给用户
+                }
+            },
             handleUnreviewedClick: function ()
             {
                 this.showTable = true;
@@ -301,14 +360,13 @@
                     this.showTable = true;
                     this.showTable1 = false;
                     this.pagin1=false;
-                    this.getTableData(this.tabname,1);
 
                 } else if (tab.name === 'approval') {
                     this.tabname=tab.name;
                     this.showTable = false;
                     this.showTable1 = true;
                     this.pagin1=true;
-                    this.getTableData(this.tabname,1);
+                    this.getTableData(this.tabname);
 
                 }
             },
@@ -322,24 +380,22 @@
             handlePageChange2(page) {
                 this.getTableData(this.tabname,page);
             },
-            getTableData(tabname,page) {
-                axios
-                    .get('/pagesallinfo', {
-                        params: {
-                            page: page - 1,
-                            pageSize: this.pageSize,
-                            status:tabname,
-                        }
-                    })
+            getTableData(tabname) {
+                axios.get('/inviteall')
                     .then(response => {
-                        var tableData = response.data.content;
+                            // 处理响应数据
+                            console.log(response.data);
+                        var tableData = response.data.filter(item => item.status === '未处理');
+                        tableData.forEach(item => {
+                            const date = new Date(item.visitDate);
+                            item.visitDate = date.toISOString().split('T')[0]; // 仅保留年月日部分
+                        });
                         if(tabname==='invite') {
-                            this.tableData = tableData;
+                            this.tableData = '';
                         }
                         else if(tabname==='approval') {
                             this.tableData1 = tableData;
                         }
-                        this.total = response.data.totalElements;
                     })
                     .catch(error => {
                         console.log(error);
