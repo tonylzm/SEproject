@@ -11,4 +11,7 @@ public interface sendinfoDao extends JpaRepository<sendinfo,Integer> {
     Page<sendinfo>  findByVisitPhone(String visitPhone, Pageable pageable);
 
 
+    sendinfo findByUUID(String uuid);
+
+    void deleteByUUID(String uuid);
 }

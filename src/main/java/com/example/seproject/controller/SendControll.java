@@ -39,5 +39,16 @@ public class SendControll {
     }
 
 
+    @GetMapping("/findsub")
+
+    public sendinfo findsub(@RequestParam("UUID")String UUID){
+        return s.findByUUID(UUID);
+    }
+
+    @GetMapping("/deletesub")
+    public String deletesub(@RequestParam("UUID")String UUID){
+        s.deleteByUUID(UUID);
+        return "success";
+    }
 
 }
