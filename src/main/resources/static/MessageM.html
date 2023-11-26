@@ -54,10 +54,11 @@
                 <el-table-column prop="time" label="发送时间" width="160">
                 </el-table-column>
 
-                <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="100" >
+                <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="200" >
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: center; align-items: center;">
                             <el-button type="primary" icon="el-icon-check" @click="handleCheck(scope.row.uuid)" size="small">查看</el-button>
+                            <el-button type="danger" icon="el-icon-close" @click="withdraw(scope.row.uuid)" size="small">撤回</el-button>
                             <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" :center="true">
                                 <span>{{ dialogContent }}</span>
                             </el-dialog>
@@ -120,6 +121,25 @@
             {
                 this.showTable = true;
                 this.showTable1 = true;
+            },
+            withdraw(uuid){
+                const that = this;
+                axios.get('/deletesub', {
+                    params: {
+                        UUID: uuid,
+                    },
+                })
+                    .then(response => {
+                        if (response.data==="success") {
+                            alert("撤回成功");
+                            that.getTableData('MessageM',1);
+                        }  else
+                            alert("撤回失败");
+
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
             },
 
             handleCheck(uuid) {
