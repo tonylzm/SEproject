@@ -463,24 +463,34 @@
                     this.$set(checkboxItem, 'checked', false);
                 });
                 console.log(main,second);
-                this.mainpower=[];
-                this.mainpower.push(main);
-                this.secondarypower=[];
-                this.secondarypower.push(second);
                 this.matchMainpower(main);
                 this.matchsecondarypower(second);
             },
             //修改权限
             checkboxChange(e) {
-                const selectedItems = e.target.value;// 选中的复选框的值
-                this.mainpower.push(selectedItems); // 将selectedItems加入到mainpower数组中
+                this.checkboxItems.forEach((checkboxItem) => {
+                    if (checkboxItem.checked) {
+                        this.mainpower.push(checkboxItem.value);
+                    }
+                    else {
+                        this.mainpower.splice(this.mainpower.indexOf(checkboxItem.value), 1);
+                    }
+                });
+                this.mainpower = Array.from(new Set(this.mainpower));
                 const mainpowerString = this.mainpower.join(', '); // 使用逗号将数组元素连接起来
                 console.log(mainpowerString);
             },
             checkboxChange1(e) {
-                const selectedItems = e.target.value;
-                this.secondarypower.push(selectedItems);
-                const secondarypowerString = this.secondarypower.join(', ');
+                this.checkboxItems1.forEach((checkboxItem) => {
+                    if (checkboxItem.checked) {
+                        this.secondarypower.push(checkboxItem.value);
+                    }
+                    else {
+                        this.secondarypower.splice(this.mainpower.indexOf(checkboxItem.value), 1);
+                    }
+                });
+                this.secondarypower = Array.from(new Set(this.secondarypower));
+                const secondarypowerString = this.secondarypower.join(', '); // 使用逗号将数组元素连接起来
                 console.log(secondarypowerString);
             },
             //查看原有信息
