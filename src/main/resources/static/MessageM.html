@@ -40,25 +40,27 @@
         <el-tabs v-model="tabledata" type="border-card" @tab-click="handleTabClick">
             <el-tab-pane label="信息管理" name="MessageM" ></el-tab-pane>
 
-            <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
+            <span>欢迎，xx（工号： {{ storedUsername }}）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
 
             <el-table  v-if="showTable" :data="tableData" :columns="tableColumns">
-                <el-table-column prop="number" label="访问序号" width="100">
+                <el-table-column prop="uuid" label="访问序号" width="100">
                 </el-table-column>
-                <el-table-column prop="messageClassify" label="短信分类" width="100">
+                <el-table-column prop="title" label="短信分类" width="100">
                 </el-table-column>
-                <el-table-column prop="messageContent" label="内容" width="250">
+                <el-table-column prop="substance" label="内容" width="250">
                 </el-table-column>
-                <el-table-column prop="Phone" label="手机号" width="160">
+                <el-table-column prop="visitPhone" label="手机号" width="160">
                 </el-table-column>
-                <el-table-column prop="sendTime" label="发送时间" width="160">
+                <el-table-column prop="time" label="发送时间" width="160">
                 </el-table-column>
 
                 <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="100" >
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary" icon="el-icon-check" @click="handleCheck(scope.row.visitorPhone)" size="small">查看</el-button>
-
+                            <el-button type="primary" icon="el-icon-check" @click="handleCheck(scope.row.uuid)" size="small">查看</el-button>
+                            <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" :center="true">
+                                <span>{{ dialogContent }}</span>
+                            </el-dialog>
                         </div>
                     </template>
                 </el-table-column>
@@ -79,10 +81,12 @@
             return {
                 tabname:'',
                 showTable:true ,
-
+                storedUsername:localStorage.getItem('username'),
 
                 content:"",
                 content1:"",
+                dialogContent:'',
+                dialogTitle:'',
                 dialogVisible:false,
                 dialogVisible1:false,
                 pagin1:false,
@@ -113,17 +117,21 @@
                 this.showTable1 = true;
             },
 
-            handleCheck(visitorPhone) {
+            handleCheck(uuid) {
                 //查看访客操作
                 this.dialogVisible = true;
                 // console.log(dialogVisible)
-                axios.get('/findinfo', {
+                console.log(uuid)
+                axios.get('/findsub', {
                     params: {
-                        visitorPhone: visitorPhone
-                    }
+                        UUID: uuid,
+                    },
                 })
                     .then(response => {
-                        this.content = response.data;
+
+                        this.dialogTitle=response.data.title;
+                        this.dialogContent = response.data.substance;
+
                     })
                     .catch(error => {
                         console.error(error);
@@ -211,7 +219,7 @@
             },
             getTableData(tabname,page) {
                 axios
-                    .get('/pagesallinfo', {
+                    .get('/allsub', {
                         params: {
                             page: page - 1,
                             pageSize: this.pageSize,
@@ -220,6 +228,7 @@
                     })
                     .then(response => {
                         var tableData = response.data.content;
+                        console.log(tableData)
                         if(tabname==='MessageM') {
                             this.tableData = tableData;
                         }
