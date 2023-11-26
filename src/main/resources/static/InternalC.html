@@ -55,7 +55,7 @@
                     <h3>员工工号：</h3>
                     <el-input
                             placeholder="请输入员工工号"
-                            v-model="employee.idcard"
+                            v-model="employee.staffIdcard"
                             style="width: 200px">
                     </el-input>
                 </div>
@@ -63,7 +63,7 @@
                     <h3>员工职务：</h3>
                     <el-input
                             placeholder="全部"
-                            v-model="employee.position"
+                            v-model="employee.staffPosition"
                             style="width: 200px">
                     </el-input>
                 </div>
@@ -71,21 +71,21 @@
                     <h3>所属部门：</h3>
                     <el-input
                             placeholder="全部"
-                            v-model="employee.affiliation"
+                            v-model="employee.staffAffiliatedUnit"
                             style="width: 200px">
                     </el-input>
                 </div>
                 <br/>
                 <br/>
                 <el-button type="primary" @click="searchEmployee()">查询</el-button>
-                <el-button >重置</el-button>
+                <el-button @click="reset()">重置</el-button>
                 <el-button type="primary" @click="dialogVisible1 = true">添加</el-button>
                 <el-dialog title="增添新员工" :visible.sync="dialogVisible1" :before-close="handleClose">
                     <div class="float-div">
                         <h3>工号：</h3>
                         <el-input
                                 placeholder="请填写工号"
-                                v-model="employee.account"
+                                v-model="employee.staffIdcard"
                                 style="width: 200px">
                         </el-input>
                     </div>
@@ -93,22 +93,14 @@
                         <h3>员工姓名：</h3>
                         <el-input
                                 placeholder="请填写员工姓名"
-                                v-model="employee.name"
+                                v-model="employee.staffName"
                                 style="width: 200px">
                         </el-input>
                     </div>
-<!--                    <div style="clear: both;" class="float-div">-->
-<!--                        <h3>员工性别：</h3>-->
-<!--                        <el-input-->
-<!--                                placeholder="请填写员工性别"-->
-<!--                                v-model="employee.gender"-->
-<!--                                style="width: 200px">-->
-<!--                        </el-input>-->
-<!--                    </div>-->
                     <div style="clear: both;" class="float-div">
                         <h3>所属部门：</h3>
-                        <el-select v-model="employee.department"
-                                   placeholder="请选择当前职务"
+                        <el-select v-model="employee.staffAffiliatedUnit"
+                                   placeholder="请选择所属部门"
                                    style="width: 200px">
                             <el-option
                                     v-for="item in options1"
@@ -118,9 +110,17 @@
                             </el-option>
                         </el-select>
                     </div>
+                    <div class="float-div">
+                        <h3>手机：</h3>
+                        <el-input
+                                placeholder="请填写手机"
+                                v-model="employee.staffPhone"
+                                style="width: 300px">
+                        </el-input>
+                    </div>
                     <div style="clear: both;" >
                         <h3>当前职务</h3>
-                        <el-select v-model="employee.post"
+                        <el-select v-model="employee.staffPosition"
                                    placeholder="请选择当前职务"
                                    style="width: 200px">
                             <el-option
@@ -133,7 +133,7 @@
                     </div>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="dialogVisible1 = false">取 消</el-button>
-                        <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
+                        <el-button type="primary" @click="addEmployee">确 定</el-button>
                     </span>
                 </el-dialog>
             </el-main>
@@ -154,22 +154,75 @@
                 <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="250" >
                     <template slot-scope="scope">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <el-button type="primary"  @click="handleCheck1(scope.row.visitorPhone)" size="small">编辑</el-button>
-                            <el-button type="info"  @click="dialogVisible = true" size="small">权限</el-button>
+                            <el-button type="primary"  @click="dialogVisible2= true" size="small">编辑</el-button>
+                            <el-dialog title="编辑" :visible.sync="dialogVisible2" :before-close="handleClose">
+                                <div class="float-div">
+                                    <h3>员工姓名：</h3>
+                                    <el-input
+                                            v-model="employee.staffName"
+                                            style="width: 200px">
+                                    </el-input>
+                                </div>
+                                <div class="float-div">
+                                    <h3>密码：</h3>
+                                    <el-input
+                                            v-model="employee.staffPassword"
+                                            style="width: 300px">
+                                    </el-input>
+                                </div>
+                                <div style="clear: both;" class="float-div">
+                                    <h3>所属部门：</h3>
+                                    <el-select v-model="employee.staffAffiliatedUnit"
+                                               style="width: 200px">
+                                        <el-option
+                                                v-for="item in options1"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.value">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <div class="float-div">
+                                    <h3>手机：</h3>
+                                    <el-input
+                                            v-model="employee.staffPhone"
+                                            style="width: 300px">
+                                    </el-input>
+                                </div>
+                                <div style="clear: both;" >
+                                    <h3>当前职务</h3>
+                                    <el-select v-model="employee.staffPosition"
+                                               style="width: 200px">
+                                        <el-option
+                                                v-for="item in options2"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.value">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <span slot="footer" class="dialog-footer">
+                                        <el-button @click="dialogVisible2 = false">取 消</el-button>
+                                        <el-button type="primary" @click="dialogVisible2 = false">确 定</el-button>
+                                    </span>
+                            </el-dialog>
+                            <el-button type="info"  @click="match(scope.row.mainpower,scope.row.secondarypower)" size="small">权限</el-button>
                                 <el-dialog title="权限设置" :visible.sync="dialogVisible" :before-close="handleClose">
                                     <h3>主权限设置：</h3>
-                                    <el-checkbox v-model="permissions.checked1">系统管理员</el-checkbox>
-                                    <el-checkbox v-model="permissions.checked2">主管</el-checkbox>
+                                    <div v-for="(item, index) in checkboxItems" :key="index" class="checkbox-item">
+                                        <label class="checkbox">
+                                            <input type="checkbox" :value="item.value" v-model="item.checked" @change="checkboxChange">{{item.value}}
+                                        </label>
+                                    </div>
                                     <h3>副权限设置：</h3>
-                                    <el-checkbox v-model="permissions.checked3">办公楼</el-checkbox>
-                                    <el-checkbox v-model="permissions.checked4">仓库</el-checkbox>
-                                    <el-checkbox v-model="permissions.checked5">门岗</el-checkbox>
-                                    <el-checkbox v-model="permissions.checked6">码头</el-checkbox>
-                                    <el-checkbox v-model="permissions.checked7">实验室</el-checkbox>
-                                    <el-checkbox v-model="permissions.checked8">研发部</el-checkbox>
+                                    <div v-for="(item, index) in checkboxItems1" :key="index" class="checkbox-item">
+                                        <label class="checkbox">
+                                            <input type="checkbox" :value="item.value" v-model="item.checked" @change="checkboxChange1">{{item.value}}
+                                        </label>
+                                    </div>
                                     <span slot="footer" class="dialog-footer">
                                         <el-button @click="dialogVisible = false">取 消</el-button>
-                                        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                                        <el-button type="primary" @click="updatePermissions">确 定</el-button>
                                     </span>
                                 </el-dialog>
                             <el-button type="danger"  @click="handleMove(scope.row.visitorPhone)" size="small">删除</el-button>
@@ -251,9 +304,13 @@
                 content1:"",
                 dialogVisible:false,
                 dialogVisible1:false,
+                dialogVisible2:false,
                 pagin1:false,
-
-
+                mainpower: [],
+                secondarypower:[],
+                // staffInfo: null,
+                selectedItems: [],
+                selectedItems1: [],
                 tableData:[],
                 visitor: {
                     startTime: '',
@@ -271,28 +328,39 @@
                     staffPosition: '',
                     staffPassword: '',
                     UUID: '',
+                    mainpower: '',
+                    secondarypower:'',
                 },
                 inviter: {
                     reason: '',
                 },
                 employee:{
-                    idcard:'',
-                    affiliation: '',
-                    position:'',
-                    name:'',
-                    gender:'',
-                    account:'',
-                    department:'',
+                    staffName: '',
+                    staffPhone: '',
+                    staffIdCard: '',
+                    staffAffiliatedUnit: '',
+                    staffPosition: '',
+                    staffPassword: '',
+
+
                 },
+
+                checkboxItems: [
+                    { value: "系统管理员", checked: false },
+                    { value: "主管", checked: false },
+                    // 添加其他复选框项...
+                ],
+                checkboxItems1: [
+                    { value: "办公大楼", checked: false },
+                    { value: "仓库", checked: false },
+                    {value: "门岗", checked: false },
+
+                    // 添加其他复选框项...
+                ],
+
                 permissions:{
-                    checked1:false,
-                    checked2:false,
-                    checked3:false,
-                    checked4:false,
-                    checked5:false,
-                    checked6:false,
-                    checked7:false,
-                    checked8:false,
+
+
                     event1:false,
                     event2:false,
                     event3:false,
@@ -300,28 +368,28 @@
                     event5:false,
                     event6:false,
                     event7:'',
-                },
+        },
                 control:{
                     place1:false,
                     place2:false,
                 },
                 //选项
                 options1: [{
-                    value: '选项1',
+                    value: '人事部',
                     label: '人事部'
                 }, {
-                    value: '选项2',
+                    value: '行政部',
                     label: '行政部'
                 }, {
-                    value: '选项2',
+                    value: '市场部',
                     label: '市场部'
                     },
                 ],
                 options2: [{
-                    value: '选项1',
+                    value: '部门经理',
                     label: '部门经理'
                 }, {
-                    value: '选项2',
+                    value: '部门员工',
                     label: '部门员工'
                 },
                 ],
@@ -342,6 +410,109 @@
                 this.showTable = true;
                 this.showTable1 = true;
             },
+            //添加员工
+            addEmployee() {
+
+                const that = this;
+                that.employee.staffPassword=that.employee.staffIdcard;
+                // 发送POST请求添加员工信息
+                axios.post('/addstaff', this.employee)
+                    .then(response => {
+                        // 处理添加成功的逻辑
+                        console.log(response.data);
+                        that.getTableData(1);
+                        // 关闭弹窗
+                        this.dialogVisible1 = false;
+
+                    })
+                    .catch(error => {
+                        // 处理添加失败的逻辑
+                        console.error(error);
+                    });
+            },
+            //重置查询
+            reset(){
+                this.employee.staffIdcard = '';
+                this.employee.staffPosition = '';
+                this.employee.staffAffiliatedUnit = '';
+            },
+            matchMainpower(main) {
+                const mainpower = main;
+                this.checkboxItems.forEach((checkboxItem) => {
+                    if (mainpower.includes(checkboxItem.value)) {
+                        this.$set(checkboxItem, 'checked', true);
+                    }
+                });
+            },
+            matchsecondarypower(second) {
+                const secondarypower = second;
+                this.checkboxItems1.forEach((checkboxItem) => {
+                    if (secondarypower.includes(checkboxItem.value)) {
+                        this.$set(checkboxItem, 'checked', true);
+                    }
+                });
+            },
+            //获取到这一行的信息
+            match(main,second){
+                this.dialogVisible = true;
+                //清空选项
+                this.checkboxItems.forEach((checkboxItem) => {
+                    this.$set(checkboxItem, 'checked', false);
+                });
+                this.checkboxItems1.forEach((checkboxItem) => {
+                    this.$set(checkboxItem, 'checked', false);
+                });
+                console.log(main,second);
+                this.matchMainpower(main);
+                this.matchsecondarypower(second);
+            },
+            //修改权限
+            checkboxChange(e) {
+                this.checkboxItems.forEach((checkboxItem) => {
+                    if (checkboxItem.checked) {
+                        this.mainpower.push(checkboxItem.value);
+                    }
+                    else {
+                        this.mainpower.splice(this.mainpower.indexOf(checkboxItem.value), 1);
+                    }
+                });
+                this.mainpower = Array.from(new Set(this.mainpower));
+                const mainpowerString = this.mainpower.join(', '); // 使用逗号将数组元素连接起来
+                console.log(mainpowerString);
+            },
+            checkboxChange1(e) {
+                this.checkboxItems1.forEach((checkboxItem) => {
+                    if (checkboxItem.checked) {
+                        this.secondarypower.push(checkboxItem.value);
+                    }
+                    else {
+                        this.secondarypower.splice(this.mainpower.indexOf(checkboxItem.value), 1);
+                    }
+                });
+                this.secondarypower = Array.from(new Set(this.secondarypower));
+                const secondarypowerString = this.secondarypower.join(', '); // 使用逗号将数组元素连接起来
+                console.log(secondarypowerString);
+            },
+            //查看原有信息
+            show() {
+                console.log(this.staffInfo.someCondition);
+                this.$axios.get('/staffinfo', { params: { StaffIdcard: 'your_staff_id' } })
+                    .then(response => {
+                        this.staffInfo = response.data;
+                        // 根据后端数据设置多选框选中状态
+                        this.permissions.checked1 = this.staffInfo.someCondition;
+                        this.permissions.checked2 = this.staffInfo.someOtherCondition;
+                        // 设置其他权限选项的选中状态
+                        // 显示权限设置对话框
+                        this.dialogVisible = true;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
+
+            //删除信息
+
 
             handleReviewedClick() {
                 // 处理已审核记录标签页点击事件
@@ -373,10 +544,9 @@
             getTableData(page) {
                 const that = this;
                 const filter = {
-                    staffIdcard:this.employee.idcard,
-                    staffPosition:this.employee.position,
-                    staffAffiliatedUnit:this.employee.affiliation,
-
+                    staffIdcard:this.employee.staffIdcard,
+                    staffPosition:this.employee.staffPosition,
+                    staffAffiliatedUnit:this.employee.staffAffiliatedUnit,
                 };
                 const page1 = page-1; // 可选，根据你的需求设置
                 const pageSize = 8; // 可选，根据你的需求设置
@@ -405,6 +575,7 @@
                 this.$confirm('确定关闭吗').then(() => {
                     // function(done)，done 用于关闭 Dialog
                     done();
+
 
                     console.info("点击右上角 'X' ，取消按钮或遮罩层时触发");
                 }).catch(() => {
