@@ -117,4 +117,16 @@ public class StaffControll {
         }
         return "权限不足";
     }
+    @GetMapping("/deletestaff")//删除员工信息，需要主管权限
+    public String deletestaff(
+            @RequestParam("edit") String edit,
+            @RequestParam("StaffIdcard") String StaffIdcard) {
+        if (check.checkpower(edit).contains("主管")) {
+            {
+                i.deleteByStaffIdcard(StaffIdcard);
+                return "删除成功";
+            }
+        }
+        return "权限不足";
+    }
 }

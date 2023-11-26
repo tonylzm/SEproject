@@ -22,4 +22,5 @@ public interface InStaffDao extends JpaRepository<Internal_staff,Integer> {
     void updateUUIDByStaffIdcard( String StaffIdcard,  String uuid);
 
 
+    void deleteByStaffIdcard(String staffIdcard);
 }
