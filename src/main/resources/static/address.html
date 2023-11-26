@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue.js Example2</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+<div id="map" style="height: 500px;"></div>
+
+</div>
+
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+            }
+        },
+        mounted() {
+            const map = L.map('map').setView([31.299, 120.585], 13);
+
+            // 添加地图图层
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // 监听地图点击事件
+            map.on('click', async (e) => {
+                const { lat, lng } = e.latlng;
+
+                // 获取地址信息
+                const address = await this.getAddressFromCoordinates(lat, lng);
+                selectedLocation = address.display_name;
+                withoutNumbers =selectedLocation .replace(/\d+/g, '').replace(/\s\s+/g, ' ');
+                parts =  withoutNumbers.split(', ');
+                reversed = parts.reverse();
+                reversedString = reversed.join('');
+
+                console.log(address.display_name)
+                console.log(reversedString)
+
+                const marker = L.marker([lat, lng]).addTo(map);
+                marker.bindPopup(`员工位置: ${reversedString}`).openPopup();
+            });
+        },
+        methods: {
+            async getAddressFromCoordinates(lat, lng) {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+                const data = await response.json();
+                return data;
+            }
+        }
+    });
+        </script>
+</html>
