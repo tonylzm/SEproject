@@ -217,7 +217,7 @@
                                     <h3>副权限设置：</h3>
                                     <div v-for="(item, index) in checkboxItems1" :key="index" class="checkbox-item">
                                         <label class="checkbox">
-                                            <input type="checkbox" :value="item.value" v-model="item.checked" @change="checkboxChange">{{item.value}}
+                                            <input type="checkbox" :value="item.value" v-model="item.checked" @change="checkboxChange1">{{item.value}}
                                         </label>
                                     </div>
                                     <span slot="footer" class="dialog-footer">
@@ -306,8 +306,8 @@
                 dialogVisible1:false,
                 dialogVisible2:false,
                 pagin1:false,
-                mainpower: '',
-                secondarypower:'',
+                mainpower: [],
+                secondarypower:[],
                 // staffInfo: null,
                 selectedItems: [],
                 selectedItems1: [],
@@ -463,18 +463,25 @@
                     this.$set(checkboxItem, 'checked', false);
                 });
                 console.log(main,second);
+                this.mainpower=[];
+                this.mainpower.push(main);
+                this.secondarypower=[];
+                this.secondarypower.push(second);
                 this.matchMainpower(main);
                 this.matchsecondarypower(second);
             },
             //修改权限
             checkboxChange(e) {
-                const selectedItems = e.target.value;
-                this.mainpower = selectedItems.join(",");
-                console.log(this.mainpower)
+                const selectedItems = e.target.value;// 选中的复选框的值
+                this.mainpower.push(selectedItems); // 将selectedItems加入到mainpower数组中
+                const mainpowerString = this.mainpower.join(', '); // 使用逗号将数组元素连接起来
+                console.log(mainpowerString);
             },
             checkboxChange1(e) {
                 const selectedItems = e.target.value;
-                this.secondarypower = selectedItems.join(",");
+                this.secondarypower.push(selectedItems);
+                const secondarypowerString = this.secondarypower.join(', ');
+                console.log(secondarypowerString);
             },
             //查看原有信息
             show() {
