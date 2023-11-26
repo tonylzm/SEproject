@@ -3,6 +3,7 @@ package com.example.seproject.controller;
 import com.example.seproject.config.StaffSpecification;
 import com.example.seproject.entity.Internal_staff;
 import com.example.seproject.jpa.InStaffDao;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -93,7 +94,6 @@ public class StaffControll {
         return i.findAll(spec,pageable);
 
     }
-
     @GetMapping("/updatestaff")//编辑员工信息，需要主管权限
     public String updatestaff(
             @RequestParam("edit") String edit,
@@ -117,6 +117,7 @@ public class StaffControll {
         }
         return "权限不足";
     }
+    @Transactional
     @GetMapping("/deletestaff")//删除员工信息，需要主管权限
     public String deletestaff(
             @RequestParam("edit") String edit,

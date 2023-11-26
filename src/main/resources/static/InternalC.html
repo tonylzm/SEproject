@@ -167,7 +167,7 @@
                                 <div class="float-div">
                                     <h3>密码：</h3>
                                     <el-input
-                                            v-model="content.staffPassword"
+                                            v-model="content.staffIdCard"
                                             style="width: 300px">
 
                                     </el-input>
@@ -208,7 +208,7 @@
                                 </div>
                                 <span slot="footer" class="dialog-footer">
                                         <el-button @click="dialogVisible2 = false">取 消</el-button>
-                                        <el-button type="primary" @click="dialogVisible2 = false">确 定</el-button>
+                                        <el-button type="primary" @click="updateinformation(content.staffIdCard)">确 定</el-button>
                                     </span>
                             </el-dialog>
                             <el-button type="info"  @click="match(scope.row.mainpower,scope.row.secondarypower,scope.row.staffIdcard)" size="small">权限</el-button>
@@ -230,7 +230,7 @@
                                         <el-button type="primary" @click="updatePermissions()">确 定</el-button>
                                     </span>
                                 </el-dialog>
-                            <el-button type="danger"  @click="handleMove(scope.row.visitorPhone)" size="small">删除</el-button>
+                            <el-button type="danger"  @click="handleMove(scope.row.staffIdcard)" size="small">删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -258,18 +258,19 @@
 
                 <div style="clear: both;" class="float-div">
                     <h2>设置管控地点</h2>
-                    <el-checkbox v-model="control.place1">仓库</el-checkbox>
-                    <el-checkbox v-model="control.place2">办公大楼</el-checkbox>
+                    <div v-for="(item, index) in checkboxItems2" :key="index" class="checkbox-item">
+                        <label class="checkbox">
+                            <input type="checkbox" :value="item.value" v-model="item.checked" @change="checkboxChange">{{item.value}}
+                        </label>
+                    </div>
                 </div>
                 <div style="clear: both;" class="float-div">
                     <h2>设置管控事件</h2>
-                    <el-checkbox v-model="control.event1">参观（政府工作人员）</el-checkbox>
-                    <el-checkbox v-model="control.event2">参观（供应商）</el-checkbox>
-                    <el-checkbox v-model="control.event3">参观（家属）</el-checkbox>
-                    <el-checkbox v-model="control.event4">施工</el-checkbox>
-                    <el-checkbox v-model="control.event5">物流</el-checkbox>
-                    <br/>
-                    <el-checkbox v-model="control.event6">其他</el-checkbox>
+                    <div v-for="(item, index) in checkboxItems3" :key="index" class="checkbox-item">
+                        <label class="checkbox">
+                            <input type="checkbox" :value="item.value" v-model="item.checked" @change="checkboxChange">{{item.value}}
+                        </label>
+                    </div>
                     <br/>
                     <br/>
                     <el-input
@@ -285,8 +286,31 @@
                     <el-button type="primary"
                                style="display:block;
                                margin:0 auto"
+                               @click="addEmployee()"
                                round>添加</el-button>
                 </div>
+                <div class="float-div2">
+                    <br/>
+                    <el-button type="primary"
+                               style="display:block;
+                               margin:0 auto"
+                               @click="dialogVisible3 = true"
+                               round>查看</el-button>
+                </div>
+                <el-dialog title="管控" :visible.sync="dialogVisible3" :before-close="handleClose">
+
+                    <el-table   :data="tableData3" :columns="tableColumns" >
+                        <el-table-column prop="place" label="地点" width="100">
+                        </el-table-column>
+                        <el-table-column prop="reason" label="理由" width="300">
+                        </el-table-column>
+                        <el-table-column prop="start" label="开始时间" width="100">
+                        </el-table-column>
+                        <el-table-column prop="end" label="结束时间" width="100">
+                        </el-table-column>
+
+                    </el-table>
+                </el-dialog>
             </el-main>
         </el-tabs>
         <el-pagination v-if="pagin1"  @current-change="handlePageChange1" :current-page="page" :page-size="pageSize" :total="total"></el-pagination>
@@ -311,6 +335,7 @@
                 dialogVisible:false,
                 dialogVisible1:false,
                 dialogVisible2:false,
+                dialogVisible3:false,
                 pagin1:false,
                 mainpower: [],
                 secondarypower:[],
@@ -359,8 +384,19 @@
                     { value: "办公大楼", checked: false },
                     { value: "仓库", checked: false },
                     {value: "门岗", checked: false },
-
-                    // 添加其他复选框项...
+                ],
+                checkboxItems2:[
+                    { value: "仓库", checked: false },
+                    { value: "办公大楼", checked: false },
+                    { value: "码头区", checked: false },
+                ],
+                checkboxItems3:[
+                    { value: "参观（政府工作人员）", checked: false },
+                    { value: "参观（供应商）", checked: false },
+                    { value: "参观（家属）", checked: false },
+                    { value: "施工", checked: false },
+                    { value: "物流", checked: false },
+                    { value: "其他", checked: false },
                 ],
 
                 permissions:{
@@ -433,6 +469,47 @@
                         console.error(error);
                     });
             },
+            //添加管控
+            addPermissions() {
+                this.place = [];
+                this.reason = [];
+                this.checkboxItems2.forEach((checkboxItem) => {
+                    if (checkboxItem.checked) {
+                        this.place.push(checkboxItem.value);
+                    }
+                });
+                this.checkboxItems3.forEach((checkboxItem) => {
+                    if (checkboxItem.checked) {
+                        this.reason.push(checkboxItem.value);
+                    }
+                });
+                const placeString = this.mainpower.join(', '); // 使用逗号将数组元素连接起来
+                const reasonString = this.secondarypower.join(', '); // 使用逗号将数组元素连接起来
+
+                axios.post('/lockdown', {
+                    params: {
+                        place:this.data.mainpower,
+                        reason:this.data.secondarypower,
+                        start:this.visitor.startTime,
+                        end:this.visitor.endTime,
+                    },
+                })
+                    .then(response => {
+                        if (response.data==="添加成功") {
+                            alert("添加成功");
+                            // this.dialogVisible = false;
+                            window.location.reload();
+                        }  else
+                            alert("权限不足");
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
+
+
+
+
             //重置查询
             reset(){
                 this.employee.staffIdcard = '';
@@ -484,6 +561,7 @@
                         this.content.staffName = response.data.staffName;
                         this.content.staffPassword = response.data.staffPassword;
                         this.content.staffAffiliatedUnit =response.data.staffAffiliatedUnit;
+                        this.content.staffIdCard=response.data.staffIdcard;
                         this.content.staffPhone=response.data.staffPhone;
                         this.content.staffPosition=response.data.staffPosition;
                         console.log(response.data);
@@ -495,6 +573,24 @@
             },
 
             //删除信息
+            handleMove(idcard) {
+                const that = this;
+                // this.dialogVisible1 = false;
+                axios.get('/deletestaff', {
+                    params: {
+                        edit:this.storedUsername,
+                        StaffIdcard: idcard,
+                    }
+                })
+                    .then(response => {
+                        this.content = response.data;
+                        that.getTableData(1);
+
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
             //更新权限
             updatePermissions() {
                 this.mainpower = [];
@@ -518,6 +614,37 @@
                         StaffIdcard: this.idcard,
                         mainpower: mainpowerString,
                         secondarypower: secondarypowerString,
+                    },
+                })
+
+                    .then(response => {
+                        if (response.data==="修改成功") {
+                            alert("修改成功");
+                            this.dialogVisible = false;
+
+                            window.location.reload();
+
+                        }  else
+                            alert("权限不足");
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
+            //更新另一处信息
+            updateinformation(idcard) {
+
+                axios.get('/updatestaff', {
+                    params: {
+                        edit:this.storedUsername,
+                        StaffIdcard: idcard,
+                        StaffName:this.content.staffName,
+                        StaffPassword:this.content.staffIdCard,
+                        StaffAffiliatedUnit:this.content.staffAffiliatedUnit,
+                        StaffPosition:this.content.staffPosition,
+                        StaffPhone:this.content.staffPhone,
+                        // mainpower: mainpowerString,
+                        // secondarypower: secondarypowerString,
                     },
                 })
 
@@ -588,8 +715,32 @@
             created() {
                 this.getTableData();
             },
-            //编辑窗口关闭按钮
 
+            //查看事务表
+            getTableData2(page) {
+                const that = this;
+                const filter = {
+                    staffIdcard:this.employee.staffIdcard,
+                    staffPosition:this.employee.staffPosition,
+                    staffAffiliatedUnit:this.employee.staffAffiliatedUnit,
+                };
+                const page1 = page-1; // 可选，根据你的需求设置
+                const pageSize = 8; // 可选，根据你的需求设置
+                // 发送 POST 请求
+                axios.post('/staffsearch?page=' + page1 + '&pageSize=' + pageSize , filter)
+                    .then(response => {
+                        // 请求成功的处理
+                        console.log(response.data);
+                        this.tableData3 = response.data.content;
+                        this.page=page;
+                        this.total = response.data.totalElements;
+                    })
+                    .catch(error => {
+                        // 请求失败的处理
+                        console.error(error);
+                    });
+            },
+            //编辑窗口关闭按钮
             handleClose(done){
                 this.$confirm('确定关闭吗').then(() => {
                     // function(done)，done 用于关闭 Dialog
