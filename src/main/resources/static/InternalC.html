@@ -49,7 +49,7 @@
             <el-tab-pane label="员工管理" name="manage" ></el-tab-pane>
             <el-tab-pane label="管控" name="control"></el-tab-pane>
 
-            <span>欢迎，xx（工号：xxxxx）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
+            <span>欢迎，xx（工号：{{storedUsername}}）</span> <!-- 这里的xx和xxxxx应该由后端数据读取得到 -->
             <el-main v-if="showTable0" style="text-align: left;">
                 <div class="float-div">
                     <h3>员工工号：</h3>
@@ -149,7 +149,7 @@
                 </el-table-column>
                 <el-table-column prop="staffIdcard" label="工号" width="160">
                 </el-table-column>
-                <el-table-column prop="staffPhone" label="手机" width="160">
+                <el-table-column prop="mainpower" label="手机" width="160">
                 </el-table-column>
                 <el-table-column prop="operation" :label-class-name="'center-label'" label="操作" width="250" >
                     <template slot-scope="scope">
@@ -206,7 +206,7 @@
                                         <el-button type="primary" @click="dialogVisible2 = false">确 定</el-button>
                                     </span>
                             </el-dialog>
-                            <el-button type="info"  @click="match(scope.row.mainpower,scope.row.secondarypower)" size="small">权限</el-button>
+                            <el-button type="info"  @click="match(scope.row.mainpower,scope.row.secondarypower,scope.row.staffIdcard)" size="small">权限</el-button>
                                 <el-dialog title="权限设置" :visible.sync="dialogVisible" :before-close="handleClose">
                                     <h3>主权限设置：</h3>
                                     <div v-for="(item, index) in checkboxItems" :key="index" class="checkbox-item">
@@ -222,7 +222,7 @@
                                     </div>
                                     <span slot="footer" class="dialog-footer">
                                         <el-button @click="dialogVisible = false">取 消</el-button>
-                                        <el-button type="primary" @click="updatePermissions">确 定</el-button>
+                                        <el-button type="primary" @click="updatePermissions()">确 定</el-button>
                                     </span>
                                 </el-dialog>
                             <el-button type="danger"  @click="handleMove(scope.row.visitorPhone)" size="small">删除</el-button>
@@ -302,6 +302,7 @@
                 showTable1:true,
                 showTable0:true,
                 content1:"",
+                storedUsername:localStorage.getItem('username'),
                 dialogVisible:false,
                 dialogVisible1:false,
                 dialogVisible2:false,
@@ -309,8 +310,7 @@
                 mainpower: [],
                 secondarypower:[],
                 // staffInfo: null,
-                selectedItems: [],
-                selectedItems1: [],
+                idcard:'',
                 tableData:[],
                 visitor: {
                     startTime: '',
@@ -412,7 +412,6 @@
             },
             //添加员工
             addEmployee() {
-
                 const that = this;
                 that.employee.staffPassword=that.employee.staffIdcard;
                 // 发送POST请求添加员工信息
@@ -453,9 +452,9 @@
                 });
             },
             //获取到这一行的信息
-            match(main,second){
+            match(main,second,idcard){
                 this.dialogVisible = true;
-                //清空选项
+                this.idcard=idcard;
                 this.checkboxItems.forEach((checkboxItem) => {
                     this.$set(checkboxItem, 'checked', false);
                 });
@@ -465,33 +464,6 @@
                 console.log(main,second);
                 this.matchMainpower(main);
                 this.matchsecondarypower(second);
-            },
-            //修改权限
-            checkboxChange(e) {
-                this.checkboxItems.forEach((checkboxItem) => {
-                    if (checkboxItem.checked) {
-                        this.mainpower.push(checkboxItem.value);
-                    }
-                    else {
-                        this.mainpower.splice(this.mainpower.indexOf(checkboxItem.value), 1);
-                    }
-                });
-                this.mainpower = Array.from(new Set(this.mainpower));
-                const mainpowerString = this.mainpower.join(', '); // 使用逗号将数组元素连接起来
-                console.log(mainpowerString);
-            },
-            checkboxChange1(e) {
-                this.checkboxItems1.forEach((checkboxItem) => {
-                    if (checkboxItem.checked) {
-                        this.secondarypower.push(checkboxItem.value);
-                    }
-                    else {
-                        this.secondarypower.splice(this.mainpower.indexOf(checkboxItem.value), 1);
-                    }
-                });
-                this.secondarypower = Array.from(new Set(this.secondarypower));
-                const secondarypowerString = this.secondarypower.join(', '); // 使用逗号将数组元素连接起来
-                console.log(secondarypowerString);
             },
             //查看原有信息
             show() {
@@ -513,7 +485,45 @@
 
             //删除信息
 
+            updatePermissions() {
+                this.mainpower = [];
+                this.secondarypower = [];
+                this.checkboxItems.forEach((checkboxItem) => {
+                    if (checkboxItem.checked) {
+                        this.mainpower.push(checkboxItem.value);
+                    }
+                });
+                this.checkboxItems1.forEach((checkboxItem) => {
+                    if (checkboxItem.checked) {
+                        this.secondarypower.push(checkboxItem.value);
+                    }
+                });
+                const mainpowerString = this.mainpower.join(', '); // 使用逗号将数组元素连接起来
+                const secondarypowerString = this.secondarypower.join(', '); // 使用逗号将数组元素连接起来
 
+                axios.get('/updatepower', {
+                    params: {
+                        edit:this.storedUsername,
+                        StaffIdcard: this.idcard,
+                        mainpower: mainpowerString,
+                        secondarypower: secondarypowerString,
+                    },
+                })
+
+                    .then(response => {
+                        if (response.data==="修改成功") {
+                            alert("修改成功");
+                            this.dialogVisible = false;
+                            //刷新页面
+                            const that = this;
+                            that.getTableData(1);
+                        }  else
+                            alert("权限不足");
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            },
             handleReviewedClick() {
                 // 处理已审核记录标签页点击事件
                 console.log('已审核记录标签页被点击了');
@@ -550,7 +560,6 @@
                 };
                 const page1 = page-1; // 可选，根据你的需求设置
                 const pageSize = 8; // 可选，根据你的需求设置
-
                 // 发送 POST 请求
                 axios.post('/staffsearch?page=' + page1 + '&pageSize=' + pageSize , filter)
                     .then(response => {
@@ -559,7 +568,6 @@
                         this.tableData1 = response.data.content;
                         this.page=page;
                         this.total = response.data.totalElements;
-
                     })
                     .catch(error => {
                         // 请求失败的处理
