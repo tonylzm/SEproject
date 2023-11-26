@@ -17,4 +17,9 @@ public class LockControll {
         lockService.processLockdownData(lockdown);
         return "success";
     }
+
+    @GetMapping("/findalllock")
+    public Iterable<Lockdown> findalllock(){
+        return l.findAll();
+    }
 }
