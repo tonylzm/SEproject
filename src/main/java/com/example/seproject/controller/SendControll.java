@@ -3,6 +3,7 @@ package com.example.seproject.controller;
 import com.example.seproject.entity.sendinfo;
 import com.example.seproject.jpa.sendinfoDao;
 import com.example.seproject.service.Info;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +46,7 @@ public class SendControll {
         return s.findByUUID(UUID);
     }
 
+    @Transactional
     @GetMapping("/deletesub")
     public String deletesub(@RequestParam("UUID")String UUID){
         s.deleteByUUID(UUID);
