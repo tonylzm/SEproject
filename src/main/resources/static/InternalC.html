@@ -241,18 +241,18 @@
                 <div class="float-div">
                     <h2>设置管控时间段</h2>
                     <div class="float-div">
-                        <h3>开始时间</h3>
-                        <el-input type="datetime-local"
-                                  v-model="visitor.startTime"
-                                  style="width: 100px">
-                        </el-input>
+                        <el-date-picker
+                                v-model="visitor.startTime"
+                                type="datetime"
+                                placeholder="选择开始时间">
+                        </el-date-picker>
                     </div>
                     <div class="float-div">
-                        <h3>结束时间</h3>
-                        <el-input type="datetime-local"
-                                  v-model="visitor.endTime"
-                                  style="width: 100px">
-                        </el-input>
+                        <el-date-picker
+                                v-model="visitor.endTime"
+                                type="datetime"
+                                placeholder="选择结束时间">
+                        </el-date-picker>
                     </div>
                 </div>
 
@@ -273,12 +273,6 @@
                     </div>
                     <br/>
                     <br/>
-                    <el-input
-                            type="textarea"
-                            :rows="2"
-                            placeholder="请输入内容"
-                            v-model="control.event7">
-                    </el-input>
                 </div>
                 <br/>
                 <div style="clear: both;" class="float-div2">
@@ -286,7 +280,7 @@
                     <el-button type="primary"
                                style="display:block;
                                margin:0 auto"
-                               @click="addEmployee()"
+                               @click="addPermissions"
                                round>添加</el-button>
                 </div>
                 <div class="float-div2">
@@ -294,7 +288,7 @@
                     <el-button type="primary"
                                style="display:block;
                                margin:0 auto"
-                               @click="dialogVisible3 = true"
+                               @click="getData"
                                round>查看</el-button>
                 </div>
                 <el-dialog title="管控" :visible.sync="dialogVisible3" :before-close="handleClose">
@@ -396,7 +390,7 @@
                     { value: "参观（家属）", checked: false },
                     { value: "施工", checked: false },
                     { value: "物流", checked: false },
-                    { value: "其他", checked: false },
+                    { value: "其他(重大事件:如年会或者日常封锁）", checked: false },
                 ],
 
                 permissions:{
@@ -483,22 +477,35 @@
                         this.reason.push(checkboxItem.value);
                     }
                 });
-                const placeString = this.mainpower.join(', '); // 使用逗号将数组元素连接起来
-                const reasonString = this.secondarypower.join(', '); // 使用逗号将数组元素连接起来
+                const placeString = this.place.join(', '); // 使用逗号将数组元素连接起来
+                const reasonString = this.reason.join(', '); // 使用逗号将数组元素连接起来
 
+                const that = this;
+                let date = this.visitor.startTime;
+                let formatted = date.getFullYear() + '-' +
+                    ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                    ('0' + date.getDate()).slice(-2) + ' ' +
+                    ('0' + date.getHours()).slice(-2) + ':' +
+                    ('0' + date.getMinutes()).slice(-2);
+
+                let date1 = this.visitor.endTime;
+                let formatted1 = date1.getFullYear() + '-' +
+                    ('0' + (date1.getMonth()+1)).slice(-2) + '-' +
+                    ('0' + date1.getDate()).slice(-2) + ' ' +
+                    ('0' + date1.getHours()).slice(-2) + ':' +
+                    ('0' + date1.getMinutes()).slice(-2);
                 axios.post('/lockdown', {
-                    params: {
-                        place:this.data.mainpower,
-                        reason:this.data.secondarypower,
-                        start:this.visitor.startTime,
-                        end:this.visitor.endTime,
-                    },
+                        place:placeString,
+                        reason:reasonString,
+                        start:formatted,
+                        end:formatted1,
                 })
                     .then(response => {
-                        if (response.data==="添加成功") {
+                        if (response.data==="success") {
                             alert("添加成功");
-                            // this.dialogVisible = false;
-                            window.location.reload();
+                            //表单清空
+                            that.resetlock();
+
                         }  else
                             alert("权限不足");
                     })
@@ -507,7 +514,15 @@
                     });
             },
 
-
+            resetlock(){
+                this.visitor.startTime='';
+                this.visitor.endTime='';
+                this.checkboxItems2.forEach((checkboxItem) => {
+                    this.$set(checkboxItem, 'checked', false);
+                });
+                this.checkboxItems3.forEach((checkboxItem) => {
+                    this.$set(checkboxItem, 'checked', false);
+                });            },
 
 
             //重置查询
@@ -589,6 +604,17 @@
                     })
                     .catch(error => {
                         console.error(error);
+                    });
+            },
+            getData() {
+                const that = this;
+                axios.get('/findalllock')
+                    .then(response => {
+                        that.tableData3 = response.data;
+                        that.dialogVisible3 = true;
+                    })
+                    .catch(error => {
+                        console.log(error);
                     });
             },
             //更新权限
@@ -745,8 +771,6 @@
                 this.$confirm('确定关闭吗').then(() => {
                     // function(done)，done 用于关闭 Dialog
                     done();
-
-
                     console.info("点击右上角 'X' ，取消按钮或遮罩层时触发");
                 }).catch(() => {
 
