@@ -160,7 +160,7 @@
                                 </template>
                                 <el-menu-item-group>
                                     <el-menu-item index="2-1"@click="changeIframeSrc5">内部管控</el-menu-item>
-                                    <el-menu-item index="2-2">内部人员位置</el-menu-item>
+                                    <el-menu-item index="2-2"@click="changeIframeSrc7" >内部人员位置</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
 
@@ -258,6 +258,10 @@
             changeIframeSrc6: function() {
                 var iframe = document.querySelector("iframe");
                 iframe.src = "/static/MessageM.html";
+            },
+            changeIframeSrc7: function() {
+                var iframe = document.querySelector("iframe");
+                iframe.src = "/static/address.html";
             },
             //解决iframe框架不能及时刷新的问题
             handleIframe(e) {
